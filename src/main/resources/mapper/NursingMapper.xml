@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 映射配置文件 -->
+<!-- 配置文件约束  mapper为根标签 -->
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="com.pubgo.dao.NursingDao">
+
+	<resultMap type="com.pubgo.vo.NursingVO" id="Mapper">
+ 		<result column="NursingID"  property="nursingID"/>
+ 		<result column="Tel"  property="tel"/>
+ 		<result column="UserName"  property="userName"/>
+ 		<result column="Customer_na"  property="customerNa"/>
+ 		<result column="Operator"  property="operator"/>
+ 		<result column="Quantity"  property="quantity"/>
+ 		<result column="Step"  property="step"/>
+ 		<result column="Score"  property="score"/>
+ 		<result column="Payment"  property="payment"/>
+ 		<result column="UserRemake"  property="userRemake"/>
+ 		<result column="EmployeeRemake"  property="employeeRemake"/>
+ 		<result column="ImagePath"  property="imagePath"/>
+ 		<result column="CreateTime"  property="createTime"/>
+ 	</resultMap>
+
+	<!-- Name等数据表名称与关键字冲突，不要带上[ ] , mybatis-plus会自动处理冲突问题 -->
+	<select id="selectNursings" resultMap="Mapper">
+		 select Nursing.NursingID, Tel, Nursing.Name UserName, Customer.Customer_na, BuisnessMan.Name Operator
+			,Quantity, Nursing.Step, Score, Payment, UserRemake, EmployeeRemake, CreateTime, ImagePath
+		from Nursing JOIN NursingProgress ON Nursing.NursingID = NursingProgress.NursingID AND Nursing.Step = NursingProgress.Step
+		LEFT JOIN BuisnessMan ON NursingProgress.Operator = BuisnessMan.BuisnessManID
+		JOIN Customer ON Nursing.Customer_ID = Customer.Customer_ID
+		<where>
+			Sign = #{sign}
+			<if test=" value != null &amp;&amp; value != &quot;&quot; ">
+				AND (Nursing.NursingID = #{value} 
+				OR Tel = #{value}
+				OR Nursing.[Name] = #{value})
+			</if>
+			<if test=" step != 0 ">
+				AND Nursing.Step = #{step}
+			</if>
+			<if test="startDate != null">
+				AND CreateTime &gt;= #{startDate}
+			</if>
+			<if test="endDate != null">
+				AND CreateTime &lt;= #{endDate}
+			</if>
+			<if test=" status == 1 ">
+				AND ( Payment = 'nursingCard' OR Payment = 'integral' ) 
+			</if>
+			<if test=" status == 2 ">
+				AND ( Payment = 'user') C
+			</if>
+			<if test=" customerID != null &amp;&amp; customerID != &quot;&quot; ">
+				AND Nursing.Customer_ID = #{customerID} 
+			</if>
+			<if test=" rgUser != null &amp;&amp; rgUser != &quot;&quot; ">
+				AND NursingProgress.Operator = #{rgUser} 
+			</if>
+		</where>
+	
+		
+	</select>
+	
+
+	
+	<update id="deleteNursingID">
+	
+		UPDATE Nursing SET Sign = '0' WHERE NursingID = #{arg0}
+		
+	</update>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

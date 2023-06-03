@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 映射配置文件 -->
+<!-- 配置文件约束  mapper为根标签 -->
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="com.pubgo.dao.CheckDao">
+
+	
+	<!-- 查询店铺当日销售及活动 type: 0 未扫描执行活动  1已扫描执行活动  -->
+	<select id="selectCheckSale" resultType="com.pubgo.bean.CheckActivity">
+		SELECT [Check].CheckID checkID, Customer_na customerName, BuisnessMan.Name buisnessManName
+			, Input_Date inputDate, SUM(UnitPrice*Quantity) unitPrice, SUM(DiscountPrice*Quantity) discountPrice
+			, SUM(Quantity) quantity, VIP_Card vip, [Check].Remark code
+		FROM [Check] join CheckGoods on [Check].CheckID = CheckGoods.CheckID
+			JOIN Customer ON [Check].Customer_ID = Customer.Customer_ID
+			JOIN BuisnessMan ON [Check].BuisnessManID = BuisnessMan.BuisnessManID
+		WHERE CONVERT(varchar(10),GETDATE(),120)= CONVERT(varchar(10),CheckDate,120) AND CheckGoods.status&lt;&gt;'赠送'  AND Stamp is null
+		GROUP BY [Check].CheckID, Customer_na, BuisnessMan.Name, Input_Date, VIP_Card, [Check].Remark
+	</select>
+	
+	<!-- 根据核销单号，修改Stamp状态 -->
+	<update id="updateStampById" >
+		update [check] set Stamp = #{arg1} Where CheckID = #{arg0}
+	</update>
+	
+	<!-- 销售看板：新增会员数，总销售金额，总销售金额，总销售金额客单价-->
+	<select id="selectCheckKanban" resultType="com.pubgo.bean.CheckKanban">
+		SELECT SUM(CASE WHEN Goods_No='VIP' THEN Quantity ELSE 0 END) VipQuantity
+		, SUM(CASE WHEN Goods_No&lt;&gt;'VIP' THEN  DiscountPrice ELSE 0 END) Amount
+		, SUM(CASE WHEN vip_card&lt;&gt;'' AND Goods_No&lt;&gt;'VIP' THEN DiscountPrice ELSE 0 END) VipAmount
+		, CAST(AVG(DiscountPrice) AS DECIMAL(10,2)) Average
+		FROM  [check] JOIN checkGoods ON [check].checkID = checkGoods.checkID 
+		where checkDate&gt;=#{arg1} AND checkDate&lt;=#{arg2}
+		AND Quantity&lt;&gt;0 AND DiscountPrice&lt;&gt;0 
+		AND Customer_ID IN
+			<foreach collection="customers" item="item" open="(" close=")" separator=",">
+				#{item}
+			</foreach>
+	</select>
+	
+</mapper>

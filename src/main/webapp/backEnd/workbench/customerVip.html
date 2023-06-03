@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>PUBGO步步高</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, maximum-scale=1.0,user-scalable=no">
+    
+    <!-- 引入图标文件 -->
+    <link rel="shortcut icon" href=".././favicon.ico" type="image/x-icon" />
+    
+    <!-- 引入vant,bootstrap样式文件 -->
+	<link
+	  rel="stylesheet"
+	  href=".././assets/vant/index.css"
+	/>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm
+		/bootstrap@4.6.1/dist/css/bootstrap.min.css" 
+		integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" 
+		crossorigin="anonymous"/>
+	
+	<!-- 引入 Vue , Vant 和 axios 的 JS 文件 -->
+	<script src="https://cdn.jsdelivr.net/npm/vue@next"></script>
+	<script src="https://cdn.jsdelivr.net/npm/vant@next/lib/vant.min.js"></script>
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	
+    <style type="text/css">
+		.card{
+			margin:0px;
+		}
+		.van-card__thumb{
+			width:44px;
+			
+		}
+	</style>
+  
+ </head>
+<body>
+	<div id="app">
+		<van-nav-bar
+			title="查询会员"
+			left-text="返回"
+			:right-text="name"
+			left-arrow
+			@click-left="onClickLeft"
+			@click-right="onClickRight"
+		></van-nav-bar>
+		
+		<van-search v-model="vip" 
+		shape="round" 
+		placeholder="请输入会员号（支持模糊查询）" 
+		@search="onSearch"
+		></van-search>
+		
+		
+		<van-card class="card" style="margin: 0px;height:78px;">
+			<template #title style="color:red;">
+				<div style="font-weight: bold;">邱先生 18820972370 (失效时间:2021.2.7)
+				</div>
+				<div style="margin:3px 0px;">店铺名称：南新店&nbsp;&nbsp;&nbsp;&nbsp;会员生日：2021.2.5</div>
+				<div style="margin:3px 0px;">可用积分：123; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;历史积分：999;</div>
+			</template>
+			<template #thumb class="imgs">
+                <img src=".././img/vipAvatar.png" style="width:44px;height:44px;">
+            </template>
+		</van-card>
+		
+		<div v-if="list.length == 0">
+			<van-empty image="search" ></van-empty>
+		</div>
+	</div>
+	
+	<script>
+	  	
+	  	
+	  	const app = Vue.createApp({
+	    	data() {
+	    		return {
+	    			name : '',
+	    			vip: '',
+	    			list: [],
+	    		}
+	    	},
+	    	methods: {
+	    		onClickLeft() {
+	    			window.location.href='./workbench.html';
+	    		},
+	    		onClickRight() {
+	    			window.location.href='.././login.html';
+	    		},
+	    		//请求查询该店铺的会员
+	    		onSearch: function () {
+	    			//验证员工号是否失效
+		    		if ( sessionStorage.getItem("id") == null )
+		    		{
+		    			vant.Dialog.alert({
+		    				message: '登录已失效，点击确认跳转到登录界面',
+		    				theme: 'round-button',
+		    			}).then(() => {
+		    				window.location.href='.././login.html';
+		    			});
+		    		}
+		    		
+		    		// 展示加载
+		    		vant.Toast.loading({
+	    	            duration: 0, 		
+	    	            forbidClick: true,
+	    	            message: "加载中..."
+	    	        });
+		    		
+		    		
+		    		const objApp = this;
+		    		const params = new URLSearchParams();
+		    		params.append("goodsNo", objApp.goodsNo );
+		  			params.append("id", sessionStorage.getItem("id") );
+		            axios.post("/PubgoWeb/stock/query/goodsNo", params)
+		            .then(function(response){
+		            	const json = response.data;
+		            	if(json.code == "200")
+		            	{
+		            		console.log(json.data.stock);
+		            		console.log(json.data.stock.length);
+		            		objApp.list = json.data.stock;
+		            		objApp.goodsNo = "";
+		            		vant.Toast.clear();
+		                }
+		            	else{
+		                    vant.Toast.clear();     // 清除加载
+		                    vant.Toast.fail(json.msg);
+		                    console.error(json.msg);
+		                }
+		            })
+		            .catch(function (error) {
+		    	    	// 请求发送失败
+			   	        vant.Toast.clear();  
+			   	        vant.Toast.fail(error);
+			   	        console.error(error);
+					})
+		            
+		            
+		            
+	    		},
+	    		
+	    	},
+	    	mounted() {
+	    		console.log(sessionStorage.getItem("id"));
+	    		//验证员工是否登录
+	    		if ( sessionStorage.getItem("id") == null )
+	    		{
+	    			vant.Dialog.alert({
+	    				message: '您还未登录，点击确认跳转到登录界面',
+	    				theme: 'round-button',
+	    			}).then(() => {
+	    				window.location.href='.././login.html';
+	    			});
+	    		}
+	    		const objApp = this;
+	    		objApp.name = sessionStorage.getItem("name")
+    		},
+	    });
+	  	
+	  	app.use(vant);
+	  	app.use(vant.Lazyload);
+	  	app.mount('#app');
+	</script>
+
+	
+</body>
+</html>

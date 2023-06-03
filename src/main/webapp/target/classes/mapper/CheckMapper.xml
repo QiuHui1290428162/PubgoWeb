@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 映射配置文件 -->
+<!-- 配置文件约束  mapper为根标签 -->
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="com.pubgo.dao.CheckDao">
+
+	
+	<!-- 查询店铺销售及活动 type: 0 未扫描执行活动  1已扫描执行活动  -->
+	<select id="selectCheckSale" resultType="com.pubgo.bean.CheckActivity">
+		SELECT [Check].CheckID checkID, Customer_na customerName, BuisnessMan.Name buisnessManName
+			, Input_Date inputDate, SUM(UnitPrice*Quantity) unitPrice, SUM(DiscountPrice*Quantity) discountPrice
+			, SUM(Quantity) quantity, VIP_Card vip, [Check].Remark code
+		FROM [Check] join CheckGoods on [Check].CheckID = CheckGoods.CheckID
+			JOIN Customer ON [Check].Customer_ID = Customer.Customer_ID
+			JOIN BuisnessMan ON [Check].BuisnessManID = BuisnessMan.BuisnessManID
+		WHERE CheckDate >  '2022-03-27' AND CheckGoods.status&lt;&gt;'赠送'  AND Stamp is null
+		GROUP BY [Check].CheckID, Customer_na, BuisnessMan.Name, Input_Date, VIP_Card, [Check].Remark
+	</select>
+	
+	<update id="updateStampById" >
+		update [check] set Stamp = #{arg1} Where CheckID = #{arg0}
+	</update>
+</mapper>

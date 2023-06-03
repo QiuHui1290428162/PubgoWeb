@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>提交成功</title>
+    <!--content="width=device-width基于设备逻辑分辨率进行页面开发
+    	,initial-scale=1.0, maximum-scale=1.0,user-scalable=no禁止页面缩放-->
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, maximum-scale=1.0,user-scalable=no">
+    
+	   <!-- 引入图标文件 -->
+    <link rel="shortcut icon" href="../../favicon.ico" type="image/x-icon" />
+	<link
+	  rel="stylesheet"
+	  href="../../assets/vant/index.css"
+	/>
+	<script src="../../assets/vue/vue.js"></script>
+	<script src="../../assets/vant/vant.min.js"></script>
+	
+	<style type="text/css">
+		.main{
+			margin: 150px auto;
+			text-align: center;
+		}
+	</style>
+</head>
+<body>
+	
+	<div id="app" class="main">
+	
+		<div>
+			<van-image
+				round
+			  width="5rem"
+			  height="5rem"
+			  fit="cover"
+			  src="../../static/image/SubmitSuccess.webp"
+			/>
+		</div>
+		<h3>提交成功 !  </h3>
+		<p>谢谢您对我们本次服务做出评价</p>
+	</div>
+	
+	
+	<script type="text/javascript">
+	
+		const app = Vue.createApp({
+			
+		});
+	  	app.use(vant);
+	  	app.use(vant.Lazyload);
+		app.mount('#app');
+	</script>
+</body>
+</html>

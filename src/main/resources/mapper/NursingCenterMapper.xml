@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="com.pubgo.dao.NursingCenterDao">
+
+	<resultMap type="com.pubgo.vo.NursingCenterVO" id="Mapper">
+ 		<result column="NursingID"  property="nursingID"/>
+ 		<result column="Customer_na"  property="customerNa"/>
+ 		<result column="Operator"  property="operator"/>
+ 		<result column="Quantity"  property="quantity"/>
+ 		<result column="Step"  property="step"/>
+ 		<result column="Remark"  property="remark"/>
+ 		<result column="EmployeeRemake"  property="employeeRemake"/>
+ 		<result column="ImagePath"  property="imagePath"/>
+ 		<result column="CreateTime"  property="createTime"/>
+ 		<result column="Score"  property="score"/>
+ 		<result column="Appraise"  property="appraise"/>
+ 	</resultMap>
+
+	<!-- Name等数据表名称与关键字冲突，不要带上[ ] , mybatis-plus会自动处理冲突问题 -->
+	<select id="selectNursings" resultMap="Mapper">
+		select NursingID, Customer.Customer_na, Operator, Quantity
+			, step, Score, Appraise, NursingCenter.Remark, EmployeeRemake, CreateTime, ImagePath
+		from NursingCenter JOIN Customer ON NursingCenter.Customer_ID = Customer.Customer_ID
+		<where>
+			Sign = #{sign}
+			<if test=" value != null &amp;&amp; value != &quot;&quot; ">
+				<bind name="v" value="'%'+value+'%'"/> 
+				AND (NursingID LIKE #{v} 
+				OR Customer.Customer_na LIKE #{v}
+				OR NursingCenter.Customer_ID = #{value}
+				OR Operator LIKE #{v}
+				OR NursingCenter.Remark LIKE #{v}
+				OR EmployeeRemake LIKE #{v})
+			</if>
+			<if test=" step != 0 ">
+				AND Step = #{step}
+			</if>
+			<if test="startDate != null">
+				AND CreateTime &gt;= #{startDate}
+			</if>
+			<if test="endDate != null">
+				AND CreateTime &lt;= #{endDate}
+			</if>
+			<if test="customerIds!=null &amp;&amp; customerIds.get(0)!=&quot;全部&quot;">
+				AND NursingCenter.Customer_ID in 
+				<foreach collection="customerIds" item="item" open="(" close=")" separator=",">
+		        	#{item}
+		        </foreach>
+			</if>
+		</where>
+	</select>
+
+	<resultMap type="com.pubgo.vo.NursingDetailsVo" id="DetailsMapper">
+ 		<result column="NursingID"  property="nursingID"/>
+ 		<result column="Remark"  property="remark"/>
+ 		<result column="Quantity"  property="quantity"/>
+ 		<result column="CurrentStep" property="currentStep"/>
+ 		<result column="Appraise" property="appraise"/>
+ 		<collection property="nursingProgress" ofType="com.pubgo.vo.NursingProgressVo">
+  			<result column="NursingProgressID" property="nursingProgressID"/>
+  			<result column="Step" property="step"/>
+  			<result column="InputDate" property="inputDate"/>
+  			<result column="Operator" property="operator"/>
+  			<result column="ImagePath" property="imagePath"/>
+  		</collection>
+ 	</resultMap>
+
+	<select id="selectNursingDetails" resultMap="DetailsMapper">
+		select NursingCenter.NursingID,Quantity,NursingCenter.Remark,Appraise,NursingCenter.Step CurrentStep,NursingProgressID,NursingProgress.Step
+			,InputDate,NursingProgress.Operator,NursingProgress.ImagePath
+		from NursingCenter join NursingProgress on NursingCenter.NursingID = NursingProgress.NursingID
+		where NursingCenter.NursingID = #{nursingID}
+		order by NursingCenter.NursingID,NursingProgress.Step
+	</select>
+	
+	<update id="updateNursing">
+		UPDATE NursingCenter SET Customer_ID = #{customerID}, Operator = #{operator}, Quantity = #{number}
+			, Remark = #{remark}, UpdateTime = getdate()	
+			<if test="imagePath!=null"> , ImagePath = #{imagePath} </if>
+		WHERE NursingID = #{nursingID}
+	</update>
+	
+	<update id="updateNursingEmployeeRemake">
+		UPDATE NursingCenter SET EmployeeRemake = #{employeeRemake}	
+		WHERE NursingID = #{nursingID}
+	</update>
+	
+	<update id="updateNursingStep">
+		UPDATE NursingCenter SET Step = #{step}	
+		<if test="score!=0"> , Score = #{score} </if>
+		<if test="appraise!=null"> , Appraise = #{appraise} </if>
+		WHERE NursingID = #{nursingID}
+	</update>
+	
+	<update id="deleteNursingID">
+		UPDATE NursingCenter SET Sign = '0' WHERE NursingID = #{arg0}
+	</update>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

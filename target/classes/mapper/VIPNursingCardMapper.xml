@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="com.pubgo.dao.VIPNursingCardDao">
+
+	<insert id="insertNursingCard"  parameterType="com.pubgo.bean.VIPNursingCard">
+		insert into VIPNursingCard(CardID,Vip,BegainDate,ExpireDate)
+		values(#{cardID},#{vip},#{begainDate},#{expireDate})
+	</insert>
+	
+</mapper>

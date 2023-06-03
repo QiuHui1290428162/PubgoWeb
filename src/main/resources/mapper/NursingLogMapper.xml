@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="com.pubgo.dao.NursingLogDao">
+
+	<select id="selectByNursingID" resultType="com.pubgo.vo.NursingLogVO">
+		SELECT LogId,NursingId,Customer_Na CustomerNa,Operator,CreateTime,Operate,NursingLog.Remark 
+		FROM NursingLog LEFT JOIN Customer ON NursingLog.Customer_ID = Customer.Customer_ID
+		WHERE NursingID = #{nursingID}
+		ORDER BY CreateTime DESC
+	</select>
+	
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

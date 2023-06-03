@@ -1,0 +1,22 @@
+USE [bbgdata]
+GO
+
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[SendSmsDetail](
+	TemplateID [varchar](30) NOT NULL   PRIMARY KEY,
+	TemplateCode [varchar](30)  NOT NULL FOREIGN KEY REFERENCES [SendSms](TemplateCode)ON DELETE CASCADE ON UPDATE CASCADE,
+	Variable [varchar](30) NOT NULL,
+	VariableType  [varchar](30) NULL,
+)
+GO
+
+SET ANSI_PADDING OFF
+GO

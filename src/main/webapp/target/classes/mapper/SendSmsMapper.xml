@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+  <mapper namespace="com.pubgo.dao.SendSmsDao">
+  	<resultMap type="com.pubgo.bean.SendSms" id="map">
+  		<result column="TemplateCode" property="templateCode"/>
+  		<result column="SignName" property="signName"/>
+  		<result column="Region" property="region"/>
+  		<result column="SysDomain" property="sysDomain"/>
+  		<collection property="templateParams" ofType="com.pubgo.bean.JsonParam">
+  			<result column="Variable" property="key"/>
+  		</collection>
+  	</resultMap>
+  
+ 	<select id="selectSmsByName" resultMap="map">
+ 		SELECT [SendSms].[TemplateCode]
+	      ,[SignName]
+	      ,[Region]
+	      ,[SysDomain]
+	      ,[Variable]
+  	  	FROM [SendSms] JOIN [SendSmsDetail] ON [SendSms].[TemplateCode] = [SendSmsDetail].[TemplateCode]
+  	  	WHERE TemplateName = #{arg0}
+ 	</select>
+ 
+ </mapper>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>PUBGO步步高</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, maximum-scale=1.0,user-scalable=no">
+    <!-- 引入图标文件 -->
+    <link rel="shortcut icon" href=".././favicon.ico" type="image/x-icon" />
+    <!-- 引入vant样式文件 -->
+	<link
+	  rel="stylesheet"
+	  href="../assets/vant/index.css"
+	/>
+	<!-- 引入 Vue , Vant 和 axios 的 JS 文件 -->
+	<script src="../assets/vue/vue.js"></script>
+	<script src="../assets/vant/vant.min.js"></script>
+	<script src="../assets/axios/axios.min.js"></script>
+    <!-- 引入 自定义 的 JS 文件 -->
+    <script src="../assets/customize/customize.js"></script>
+    
+    <style type="text/css">
+		body{
+			background-color:LightGray;
+		}
+		.card{
+			background-color:rgb(255,255,255);
+			border-radius: 10px;
+			margin:5px 3px;
+			padding:5px 1px;
+		}
+		.title{
+			margin:5px;
+			color:Gray;
+		}
+	</style>
+  
+ </head>
+<body>
+	<div id="app">
+		<van-nav-bar
+				title="工作台"
+				:right-text="name"
+				@click-right="onClickRight"
+				clickable="true"
+		></van-nav-bar>
+	
+		<div class="card">
+			<p class="title">基础应用</p>
+			<van-grid >
+				<van-grid-item icon="search" text="库存" url="./stock.html"></van-grid-item>
+				<van-grid-item icon="vip-card-o" text="会员" url="./customer.html"></van-grid-item>
+				<van-grid-item icon="records" text="护理登记" url="./NursingRegistration.html"></van-grid-item>
+				<van-grid-item icon="description" text="护理管理" url="./NursingManage.html"></van-grid-item>
+			</van-grid>
+		</div>
+	</div>
+	
+	<script>
+	  	
+	  	const app = Vue.createApp({
+	    	data() {
+	    		return {
+	    			name : '',
+	    		}
+	    	},
+	    	methods: {
+	    		onClickRight() {
+	    			userManage(sessionStorage.getItem("id"));
+	    		},
+	    		
+	    	},
+	    	mounted() {
+	    		//验证员工是否登录
+	    		isLogin(sessionStorage.getItem("id"));
+	    		if( sessionStorage.getItem("buisnessManName") != "" ){
+	    			this.name = sessionStorage.getItem("buisnessManName");
+	    		}else{
+	    			this.name = sessionStorage.getItem("name");
+	    		}
+	    		
+    		},
+	    });
+	  	
+	  	app.use(vant);
+	  	app.use(vant.Lazyload);
+	  	app.mount('#app');
+	</script>
+
+	
+</body>
+</html>

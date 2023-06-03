@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>PUBGO步步高</title>
+    <!--content="width=device-width基于设备逻辑分辨率进行页面开发
+    	,initial-scale=1.0, maximum-scale=1.0,user-scalable=no禁止页面缩放-->
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, maximum-scale=1.0,user-scalable=no">
+    
+    <!-- 引入图标文件 -->
+    <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon" />
+    
+	<!-- 引入vant样式文件 -->
+	<link
+	  rel="stylesheet"
+	  href="./assets/vant/index.css"
+	/>
+	<!-- 自定义css，预加载必须 -->
+	<link href="static/css/style.css" rel="stylesheet">
+	
+	<!-- 引入 Vue , Vant 和 axios 的 JS 文件 -->
+	<script src="./assets/vue/vue.js"></script>
+	<script src="./assets/vant/vant.min.js"></script>
+	<script src="./assets/axios/axios.min.js"></script>
+	
+
+    <!-- body占满全屏 -->
+    <style type="text/css">
+    	body{
+    		background-color: #FFFFFF;
+    		padding:0px;
+			margin:0px;
+			position:absolute;
+			top:0px;
+			left:0px;
+			width:100%;
+			height:100%;
+			border:hidden;
+    	}
+		.main{
+			margin: 150px auto;
+			text-align: center;
+		}
+	</style>
+</head>
+<body>
+
+    
+    <!--*******************
+     	   预加载程序启动
+	********************-->
+    <div id="preloader" >
+		<div class="lds-ripple">
+			<div></div>
+			<div></div>
+		</div>
+    </div>
+	<!--*******************
+       	 预紧器端
+    ********************-->
+	
+	<div id="app" class="main">
+		
+		<van-form @submit="onSubmit" >
+  
+   			<van-cell-group inset >
+				<div>
+					<van-image
+						round
+					  width="10rem"
+					  height="10rem"
+					  fit="cover"
+					  src="./static/image/logo.jpg"
+					/>
+				</div>
+   				<van-field 
+   				v-model="id" 
+   				label="员工号" 
+   				placeholder="请输入您的员工号"
+				></van-field>
+   				
+		   <div style="margin: 16px;">
+		       <van-button round block type="danger" native-type="submit" size="large">登录</van-button>
+		   </div>
+		</van-form>	
+
+	</div>
+	
+	<!--**********************************
+        Scripts
+    ***********************************-->
+    <!-- Required vendors -->
+    <script src="static/js/global.min.js"></script>
+	<script src="static/js/Chart.bundle.min.js"></script>
+	<script src="static/js/jquery.nice-select.min.js"></script>
+	
+	<script src="static/js/Chart.bundle.min.js"></script>
+	
+	<!-- Chart piety plugin files -->
+    <script src="static/js/jquery.peity.min.js"></script>
+	
+	<!-- Dashboard 1 -->
+    <script src="static/js/custom.min.js"></script>
+    <script src="static/js/styleSwitcher.js"></script>
+    <script src="static/js/customize.js"></script>
+
+    
+	
+	<script>
+	  	const app = Vue.createApp({
+	    	date() {
+	    		return {
+	    			id:'',
+	    		};
+	    	}, 
+	    	methods: {
+	    		onSubmit: function () {
+	    			const objApp = this;
+	    			
+	    			vant.Toast.loading({
+	    	            duration: 0, 		// 持续展示 toast
+	    	            forbidClick: true,
+	    	            message: "加载中..."
+	    	        });
+					
+	    			//post请求传递参数，直接在data参数上手动拼接所需要传递的参数
+	    			//此时post请求默认的header是Content-Type:application/x-www-form-urlencoded发送
+	    			//所以spring接受参数直接根据所拼接的参数名来接收
+	    			axios.post('/PubgoWeb/login/post', "id="+objApp.id)
+	    			  .then(function (response) {
+	    				const json = response.data;
+	  	            	if(json.code == 200)
+	  	            	{
+	  	            		console.log(json.data);
+	  	            		sessionStorage.setItem('type', json.data.type);
+  	            			sessionStorage.setItem('id', json.data.id);
+	  	            		sessionStorage.setItem('name', json.data.name);
+	  	            		
+	  	            		//window.location.href='./backEnd/shop/stock.html';
+	  	            		window.location.href='./index.html';
+	  	                }
+	  	            	else
+	  	            	{
+			                vant.Toast.fail(json.msg);
+			                console.error(json.msg);
+	  	            	}
+	    			  })
+	    			  .catch(function (error) {
+	    				// 请求发送失败
+	  		   	        vant.Toast.fail("请求发送失败");
+	  		   	        console.error(error);
+	    			  });
+	    		},
+	    		
+	    	}
+	    	
+	    });
+		
+	  	app.use(vant);
+	  	app.use(vant.Lazyload);
+	  	app.mount('#app');
+	</script>
+
+	
+</body>
+</html>

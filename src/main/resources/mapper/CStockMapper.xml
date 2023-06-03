@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 映射配置文件 -->
+<!-- 配置文件约束  mapper为根标签 -->
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="com.pubgo.dao.CStockDao">
+	<resultMap type="com.pubgo.bean.CStock" id="Mapper">
+		
+ 	</resultMap>
+ 	
+	<select id="selectCStocks"  resultType="com.pubgo.bean.CStock">
+		
+		select  CStock.GOODS_NO, CStock.Customer_Id, Customer.Customer_na, c.ColorId
+			, GOODS.Range, DictColor.Color, dictSize.Size, SUM(c.number)As Quantity, GOODS.Picture
+		from (
+			Select StockCode, ColorId, 'S1'As code , S1 AS number from CStockDetail union
+			Select StockCode, ColorId, 'S2'As code , S2 AS number from CStockDetail union
+			Select StockCode, ColorId, 'S3'As code , S3 AS number from CStockDetail union
+			Select StockCode, ColorId, 'S4'As code , S4 AS number from CStockDetail union
+			Select StockCode, ColorId, 'S5'As code , S5 AS number from CStockDetail union
+			Select StockCode, ColorId, 'S6'As code , S6 AS number from CStockDetail union
+			Select StockCode, ColorId, 'S7'As code , S7 AS number from CStockDetail union
+			Select StockCode, ColorId, 'S8'As code , S8 AS number from CStockDetail union
+			Select StockCode, ColorId, 'S9'As code , S9 AS number from CStockDetail union
+			Select StockCode, ColorId, 'S10'As code , S10 AS number from CStockDetail union
+			Select StockCode, ColorId, 'S11'As code , S11 AS number from CStockDetail union
+			Select StockCode, ColorId, 'S12'As code , S12 AS number from CStockDetail union
+			Select StockCode, ColorId, 'S13'As code , S13 AS number from CStockDetail union
+			Select StockCode, ColorId, 'S14'As code , S14 AS number from CStockDetail union
+			Select StockCode, ColorId, 'S15'As code , S15 AS number from CStockDetail union
+			Select StockCode, ColorId, 'S16'As code , S16 AS number from CStockDetail union
+			Select StockCode, ColorId, 'S17'As code , S17 AS number from CStockDetail union
+			Select StockCode, ColorId, 'S18'As code , S18 AS number from CStockDetail union 
+			Select StockCode, ColorId, 'S19'As code , S19 AS number from CStockDetail union 
+			Select StockCode, ColorId, 'S20'As code , S20 AS number from CStockDetail
+			)c inner join  CStock on c.StockCode = CStock.StockCode 
+			inner join Customer on CStock.Customer_Id = Customer.Customer_id
+			inner join DictColor on c.ColorId = DictColor.ColorId
+			inner join Goods on CStock.GOODS_NO = Goods.GOODS_NO
+			inner join dictSize on Goods.Size_class = dictSize.Size_class AND c.code = dictSize.FieldName
+		<where>
+			<bind name="arg0" value="'%'+arg0+'%'"/> 
+			C.StockCode IN(
+				SELECT CStock.StockCode
+				FROM CStock
+				where  Goods_No LIKE #{arg0}
+			) AND c.number&lt;&gt;0 AND Customer.Mathod = '自营'
+			<if test="customersId!=null &amp;&amp; customersId.get(0)!=&quot;全部&quot;">
+				AND CStock.Customer_Id in 
+				<foreach collection="customersId" item="item" open="(" close=")" separator=",">
+		        	#{item}
+		        </foreach>
+			</if>
+		</where>
+		GROUP BY CStock.GOODS_NO, GOODS.Range, CStock.Customer_Id, Customer.Customer_na
+		, c.ColorId, DictColor.Color, dictSize.Size,GOODS.Picture
+	
+	</select>
+</mapper>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 映射配置文件 -->
+<!-- 配置文件约束  mapper为根标签 -->
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="com.pubgo.dao.RightDao">
+
+	<resultMap type="com.pubgo.bean.Right" id="Mapper">
+ 		<result column="UserNo"  property="userNo"/>
+ 		<result column="UserName"  property="userName"/>
+ 		<collection property="customers" ofType="String">
+  			<result column="Customer_ID" property="customers"/>
+  		</collection>
+ 	</resultMap>
+
+	<select id="selectRightById" resultMap="Mapper">
+		 select [Right].UserNo,UserName,Customer_ID 
+		 from [Right] JOIN RightCust ON [Right].UserNo=RightCust.UserNo
+		 where [Right].UserNo = #{arg0}
+	</select>
+</mapper>

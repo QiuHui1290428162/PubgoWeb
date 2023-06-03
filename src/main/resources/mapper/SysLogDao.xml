@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="com.pubgo.dao.SysLogDao">
+
+	<insert id="insertLog"  parameterType="com.pubgo.bean.SysLog">
+		insert into SysLog(ClientHost,UserNo,LogTime,ModuleName,Action,Remark)
+		values (#{clientHost},#{userNo},#{logTime},#{moduleName},#{action},#{remark});
+	</insert>
+</mapper>

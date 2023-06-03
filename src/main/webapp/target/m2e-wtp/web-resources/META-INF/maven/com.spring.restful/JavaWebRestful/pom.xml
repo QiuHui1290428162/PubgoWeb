@@ -1,0 +1,127 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.spring.restful</groupId>
+  <artifactId>JavaWebRestful</artifactId>
+  <packaging>war</packaging>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>JavaWebRestful Maven Webapp</name>
+  <url>http://maven.apache.org</url>
+  
+  
+  <dependencies>
+  
+  		<!-- Junit单元测试 -->
+		<dependency>
+		    <groupId>junit</groupId>
+		    <artifactId>junit</artifactId>
+		    <version>4.13-beta-2</version>
+		    <scope>test</scope>
+		</dependency>
+		
+    	<!-- 
+			Spring单元测试包 
+			此包中多出了<scope>标签，其作用是负责项目的部署
+			1.compile：默认值 他表示被依赖项目需要参与当前项目的编译，还有后续的测试，运行周期也参与其中，是一个比较强的依赖。打包的时候通常需要包含进去
+			2.test：依赖项目仅仅参与测试相关的工作，包括测试代码的编译和执行，不会被打包，例如：junit
+		-->
+		<dependency>
+		    <groupId>org.springframework</groupId>
+		    <artifactId>spring-test</artifactId>
+		    <version>5.3.10</version>
+		    <scope>test</scope>
+		</dependency>
+		
+    	<!-- spring、springMVC包 -->
+    	<!-- <groupId>：企业网址反写+项目名 -->
+    	<!-- <artifactId>：项目名-模块名 -->
+    	<!-- <version>：版本号+类型
+				 版本号由三个整数表示，每个整数用“.”分隔，表示：大版本号.分支版本号.小版本号
+				 类型：版本类型。主要有：snapshot快照版本(简化版本)、alpha内测版、beta公测版、release稳定版、GA正式发布版 
+			 -->		   
+	    <dependency>
+		    <groupId>org.springframework</groupId>
+		    <artifactId>spring-webmvc</artifactId>
+		    <version>5.3.10</version>
+		</dependency>
+    
+		<!-- spring-aspectJ 面向切面注解-->
+		<dependency>
+		    <groupId>org.springframework</groupId>
+		    <artifactId>spring-aspects</artifactId>
+		    <version>5.3.10</version>
+		</dependency>
+
+		<!-- spring jdbc包 -->
+		<dependency>
+		    <groupId>org.springframework</groupId>
+		    <artifactId>spring-jdbc</artifactId>
+		    <version>5.3.10</version>
+		</dependency>
+		
+		<!-- Java Servlet API -->
+		<dependency>
+		    <groupId>javax.servlet</groupId>
+		    <artifactId>javax.servlet-api</artifactId>
+		    <version>4.0.1</version>
+		    <scope>provided</scope>
+		</dependency>
+				
+		<!-- jsp需求包jstl -->
+		<dependency>
+		    <groupId>jstl</groupId>
+		    <artifactId>jstl</artifactId>
+		    <version>1.2</version>
+		</dependency>
+		
+	    <!-- FasterJson包 -->
+		<dependency>
+		    <groupId>com.fasterxml.jackson.core</groupId>
+		    <artifactId>jackson-databind</artifactId>
+		    <version>2.12.4</version>
+		</dependency>
+			<dependency>
+		    <groupId>com.fasterxml.jackson.core</groupId>
+		    <artifactId>jackson-core</artifactId>
+		    <version>2.12.4</version>
+		</dependency>
+			<dependency>
+		    <groupId>com.fasterxml.jackson.core</groupId>
+		    <artifactId>jackson-databind</artifactId>
+		    <version>2.12.4</version>
+		</dependency>
+		
+		<!-- Mybatis框架增强 -->
+		<dependency>
+    		<groupId>com.baomidou</groupId>
+		    <artifactId>mybatis-plus</artifactId>
+		    <version>3.4.1</version>
+		</dependency>
+		
+		<!-- 数据库连接池C3P0 -->
+		<dependency>
+		    <groupId>com.mchange</groupId>
+		    <artifactId>c3p0</artifactId>
+		    <version>0.9.5.2</version>
+		</dependency>
+		
+		<!-- 日志 -->
+		<dependency>
+		    <groupId>ch.qos.logback</groupId>
+		    <artifactId>logback-classic</artifactId>
+		    <version>1.2.3</version>
+		</dependency>
+			
+		<!-- 图片上传 -->
+		<dependency>
+		    <groupId>commons-fileupload</groupId>
+		    <artifactId>commons-fileupload</artifactId>
+		    <version>1.4</version>
+		</dependency>	
+  </dependencies>
+  
+  
+  <build>
+    <finalName>JavaWebRestful</finalName>
+  </build>
+</project>

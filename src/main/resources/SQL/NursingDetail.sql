@@ -1,0 +1,23 @@
+USE [bbgdata]
+GO
+
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[NursingDetail](
+	[NursingDetailID] [varchar](30)  NOT NULL PRIMARY KEY,
+	[NursingID] [varchar](30)  NOT NULL FOREIGN KEY REFERENCES Nursing(NursingID)ON DELETE CASCADE ON UPDATE CASCADE,
+	[Item] [varchar](20) NOT NULL,
+	[Renge] [varchar](20) NOT NULL,
+	[Number] [integer] NOT NULL,
+)
+GO
+
+SET ANSI_PADDING OFF
+GO

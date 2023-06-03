@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-config.dtd">
+ 
+<configuration>
+	<!-- 配置Mybatis框架运行时的一些行为 
+ 		mapUnderscoreToCamelCase含义为 是否开启驼峰命名规则映射
+ 	-->
+ 	<settings>
+ 		<setting name="mapUnderscoreToCamelCase" value="true"/>
+ 	</settings>
+ 	
+ 	
+ 	<!-- Mybatis Plus 3.4版本以前配置分页插件
+ 	<plugins>
+ 		<plugin interceptor="com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor"></plugin>
+ 	</plugins>
+ 	 -->
+
+
+
+
+	
+</configuration>	

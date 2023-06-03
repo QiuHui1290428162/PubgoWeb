@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>PUBGO步步高</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, maximum-scale=1.0,user-scalable=no">
+    
+    <!-- 引入图标文件 -->
+    <link rel="shortcut icon" href=".././favicon.ico" type="image/x-icon" />
+    
+    <!-- 引入vant,bootstrap样式文件 -->
+	<link
+	  rel="stylesheet"
+	  href="../assets/vant/index.css"
+	/>
+	<link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css" 
+		integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" 
+		crossorigin="anonymous"/>
+	
+	<!-- 引入 Vue , Vant 和 axios 的 JS 文件 -->
+	<script src="../assets/vue/vue.js"></script>
+	<script src="../assets/vant/vant.min.js"></script>
+	<script src="../assets/axios/axios.min.js"></script>
+    <!-- 引入 自定义 的 JS 文件 -->
+    <script src="../assets/customize/customize.js"></script>
+	
+    <style type="text/css">
+    	table{
+			font-size: 12px;
+		}
+		.table td, .table th{
+			padding-right: 5px;
+			padding-left: 5px;
+		}
+		footer{
+			position:fixed;
+			bottom:0;
+			z-index:999;
+			width: 94%;
+			margin: 0% 2% 4% 4%;
+		}
+		.conditionForm{
+			margin-top: 25px;
+		}
+	</style>
+  
+ </head>
+<body>
+	<div id="app">
+		<!-- 页面刷新,重新查询当日擦鞋记录 -->
+		<van-pull-refresh
+		  v-model="isLoading"
+		  success-text="刷新成功"
+		  @refresh="onRefresh"
+		>
+		
+			<van-nav-bar
+				title="擦鞋登记表"
+				left-text="返回"
+				:right-text="username"
+				left-arrow
+				@click-left="onClickLeft"				
+				@click-right="onClickRight"
+			></van-nav-bar>
+				
+			<van-search v-model="mobile" 
+				shape="round" 
+				show-action
+				placeholder="请输入用户手机号（支持模糊查询）" 
+				@search="onSearch"
+			>
+				<template #action>
+					<div @click="popupClick"><van-icon name="filter-o" size="25"/></div>
+				</template>
+			</van-search>
+			
+			<van-popup v-model:show="popup" 
+				round
+				closeable
+				position="right" 
+				:style="{ height:'100%', width:'80%'}"  >
+				
+				<van-form class="conditionForm" @submit="onSubmit">
+					<div style="margin:5px 10px; font-weight:bold; ">选择查询条件</div>
+					<van-cell-group inset>
+						<van-field
+						    v-model = "mobile"
+						    type = "tel"
+						    label = "手机号"
+						    placeholder = "请输入手机号码"
+						    maxlength = 11
+						    @focus="closeShow"
+						></van-field>
+						<van-field
+						  v-model="startDate"
+						  is-link
+						  readonly
+						  label="开始时间"
+						  placeholder="点击选择时间"
+						  @click="startDateClick"
+						></van-field>
+						<van-datetime-picker
+							v-if = "startDateShow"
+							v-model="startDate"
+							type="date"
+  							title="选择年月日"
+  							:min-date="minDate"
+  							:max-date="maxDate"
+  							visible-item-count= "3"
+							@confirm="startDateConfirm"
+							@cancel="startDateShow = false"
+						></van-datetime-picker>
+						
+						<van-field
+						  v-model="endDate"
+						  is-link
+						  readonly
+						  label="结束时间"
+						  placeholder="点击选择时间"
+						  @click="endDateClick"
+						></van-field>
+						<van-datetime-picker
+							v-if = "endDateShow"
+							v-model="endDate"
+							type="date"
+  							title="选择年月日"
+  							:min-date="minDate"
+  							:max-date="maxDate"
+  							visible-item-count= "3"
+							@confirm="endDateConfirm"
+							@cancel="endDateShow = false"
+						></van-datetime-picker>
+						<van-field
+						  v-model="status"
+						  is-link
+						  readonly
+						  label="用户身份"
+						  placeholder="点击选择用户身份"
+						  @click="statusClick"
+						></van-field>
+						<van-picker
+							v-if = "statusShow"
+							title="选择用户身份"
+							:columns="statusList"
+							visible-item-count= "3"
+							@confirm="statusConfirm"
+							@cancel="statusShow= false"
+						></van-picker>
+						<van-field
+						    v-model="customerID"
+						    label="店铺号"
+						    placeholder="请输入店铺编号"
+						    @focus="closeShow"
+						></van-field>
+						<van-field
+						    v-model="rgUser"
+						    label="员工号"
+						    placeholder="请输入员工编号"
+						    @focus="closeShow"
+						></van-field>
+					</van-cell-group>
+					<footer>
+						<van-button square block type="danger" native-type="submit" >查询</van-button>
+				    	<van-button square block @click="onReset">重置</van-button>
+				    </footer>
+				</van-form>
+				
+			</van-popup>
+			
+			
+			<div class="main">
+				
+				<table class="table table-striped">
+					<thead>
+					    <tr>
+					      <th style="border-width: 0px;" scope="col">#</th>
+					      <th style="border-width: 0px;" scope="col">姓名</th>
+					      <th style="border-width: 0px;" scope="col">护理时间</th>
+					      <th style="border-width: 0px;" scope="col">擦鞋</th>
+					      <th style="border-width: 0px;" scope="col">洗鞋</th>
+					      <th style="border-width: 0px;" scope="col">员工</th>
+					    </tr>
+					  </thead>
+					<tbody> 
+					<tr v-for="(item, index) in list" >
+				    	<th scope="row">{{item.mobile}} 
+				    		<van-icon v-if="item.status == 1" name="manager-o" />
+				    	</th>
+				    	<td>{{item.name}}</td>
+				    	<td >{{item.inputDate}}</td>
+				    	<td>{{item.shineShoesNum}}</td>
+				    	<td>{{item.washShoesNum}}</td>
+				    	<td>{{item.jbUser}}</td>
+					</tr>
+					</tbody>
+				</table>
+				<br/><br/><br/>
+				<div v-if="list.length == 0">
+						<van-empty image="search" ></van-empty>
+				</div>
+			</div>
+		</van-pull-refresh>
+		
+		<footer>
+			<van-button type="danger" 
+				round 
+				block 
+				url="./shineShoesRegistration.html">登记
+			</van-button>
+		</footer>
+		
+	</div>
+	
+	<script>
+	  	
+	  	const app = Vue.createApp({
+	    	data() {
+	    		return {
+	    			isLoading: false,         	      //页面刷新判断
+	    			name: '',                         //账号名称
+	    			list: [],                         //查询数据集合
+	    			mobile: '',                       //手机号
+	    			popup: false,                     //显示弹出窗判断
+	    			minDate: new Date(2021, 0, 1),    //最小可选择日期
+	    		    maxDate: new Date(2070, 12, 31),  //最大可选择日期
+	    			startDate: new Date(2021, 0, 1).toLocaleDateString(),  //开始日期 
+	    			startDateShow: false,             //显示日期选择器判断
+	    			endDate: new Date(2070, 12, 31).toLocaleDateString(),  //结束日期
+	    			endDateShow: false,               //显示日期选择器判断
+	    			status: '全部',                     //用户身份
+	    			statusList: ['全部','VIP会员','普通用户',],      //用户集合
+	    			statusShow: false,                            //显示用户选择器
+	    			customerID: '',                   //店铺号
+	    			rgUser: '',                       //员工号
+	    		}
+	    	},
+	    	methods: {
+	    		onClickLeft() {
+	    			//返回上一页
+	    			window.history.go(-1);
+	    		},
+	    		onClickRight() {
+	    			//跳转用户管理界面
+	    			userManage(sessionStorage.getItem("id"));
+	    		},
+	    		//刷新，重新加载当前网页
+	    		onRefresh(){
+	    			window.location.reload();
+	    			this.isLoading = false;
+	    		},
+	    		//显示弹出窗
+	    		popupClick(){
+	    			this.popup = true;
+	    		},
+	    		//开启一个选择器，其它选择器关闭
+	    		startDateClick(){
+	    			this.startDateShow = true;
+	    			this.endDateShow = false;
+	    			this.statusShow = false;
+	    		},
+	    		endDateClick(){
+	    			this.startDateShow = false;
+	    			this.endDateShow = true;
+	    			this.statusShow = false;
+	    		},
+	    		statusClick(){
+	    			this.startDateShow = false;
+	    			this.endDateShow = false;
+	    			this.statusShow = true;
+	    		},
+	    		closeShow(){
+	    			this.startDateShow = false;
+	    			this.endDateShow = false;
+	    			this.statusShow = false;
+	    		},
+	    		//时间选择器确认监听器，输入框获取日期并隐藏日期选择器
+	    		startDateConfirm (value){
+	    			this.startDate = value.toLocaleDateString();
+	    			this.startDateShow = false;
+	    		},
+	    		endDateConfirm (value){
+	    			this.endDate = value.toLocaleDateString();
+	    			this.endDateShow = false;
+	    		},
+	    		statusConfirm (value, index){
+	    			this.status = value;
+	    			this.statusShow = false;
+	    		},
+	    		//请求查询该店铺的会员
+	    		onSearch: function () {
+	    			//验证员工号是否失效
+		    		isLogin(sessionStorage.getItem("id"));
+	    			
+		    		// 展示加载
+		    		vant.Toast.loading({
+	    	            duration: 0, 		
+	    	            forbidClick: true,
+	    	            message: "加载中..."
+	    	        });
+	    			
+		    		const objApp = this;
+		    		const params = new URLSearchParams();
+		    		params.append("mobile", objApp.mobile );
+		    		params.append("userNo", sessionStorage.getItem("id") );
+		    		axios.post("/PubgoWeb/register/shineShoes/quest", params)
+		            .then(function(response){
+		            	const json = response.data;
+		            	if(json.code == "200")
+		            	{
+		            		console.log(json.data.appraises);
+		            		console.log(json.data.appraises.length);
+		            		objApp.list = json.data.appraises;
+		            		vant.Toast.clear();           // 清除加载
+		                }
+		            	else{
+		                    vant.Toast.clear();     // 清除加载
+		                    vant.Toast.fail(json.msg);
+		                    console.error(json.msg);
+		                }
+		            })
+		            .catch(function (error) {
+		    	    	// 请求发送失败
+			   	        vant.Toast.clear();  
+			   	        vant.Toast.fail(error);
+			   	        console.error(error);
+					});
+	    		},
+	    		onReset() {
+	    			const objApp = this;
+		    		objApp.mobile = "";
+		    		objApp.startDate = new Date(2021, 0, 1).toLocaleDateString();
+		    		objApp.endDate = new Date(2070, 12, 31).toLocaleDateString();
+		    		objApp.status = "全部";
+		    		objApp.customerID = "";
+		    		objApp.rgUser = "";
+	    		},
+	    		onSubmit:function (){
+	    			//验证员工号是否失效
+		    		isLogin(sessionStorage.getItem("id"));
+	    			
+	    			
+	    			
+		    		// 展示加载
+		    		vant.Toast.loading({
+	    	            duration: 0, 		
+	    	            forbidClick: true,
+	    	            message: "加载中..."
+	    	        });
+	    			
+		    		const objApp = this;
+		    		
+		    		
+		    			
+		    		
+		    		const params = new URLSearchParams();
+		  			params.append("mobile",  objApp.mobile);
+		  			params.append("userNo", sessionStorage.getItem("id") );
+		  			params.append("customerID",  objApp.customerID);
+	    			params.append("minDate",  objApp.startDate);
+	    			params.append("maxDate",  objApp.endDate);
+	    			params.append("rgUser",  objApp.rgUser);
+	    			if ( objApp.status == "全部" ){
+		    			params.append("status",  "");
+		    		}else if ( objApp.status == "VIP会员" ){
+		    			params.append("status",  "1");
+		    		}else if ( objApp.status == "普通用户" ){
+		    			params.append("status",  "0");
+		    		}
+		            axios.post("/PubgoWeb/register/shineShoes/quest", params)
+		            .then(function(response){
+		            	const json = response.data;
+		            	if(json.code == "200")
+		            	{
+		            		console.log(json.data.appraises);
+		            		console.log(json.data.appraises.length);
+		            		objApp.list = json.data.appraises;
+		            		vant.Toast.clear();           // 清除加载
+		            		objApp.popup = false;         // 退出弹窗
+		                }
+		            	else{
+		                    vant.Toast.clear();     // 清除加载
+		                    vant.Toast.fail(json.msg);
+		                    console.error(json.msg);
+		                }
+		            })
+		            .catch(function (error) {
+		    	    	// 请求发送失败
+			   	        vant.Toast.clear();  
+			   	        vant.Toast.fail(error);
+			   	        console.error(error);
+					});
+		            
+	    		},
+	    		
+	    	},
+	    	//页面启动执行
+	    	mounted() {
+	    		console.log(sessionStorage.getItem("id"));
+	    		//验证员工是否登录
+	    		isLogin(sessionStorage.getItem("id"));
+	    		
+	    		
+	    		const objApp = this;
+	    		objApp.username = sessionStorage.getItem("name");
+	    		//获取本地当前日期
+	    		var myDate = new Date();
+	    		console.log(myDate.toLocaleDateString());
+	    		
+	    		// 展示加载
+	    		vant.Toast.loading({
+    	            duration: 0, 		
+    	            forbidClick: true,
+    	            message: "加载中..."
+    	        });
+	    		
+	    		//加载当天店铺的护理记录
+	    		const params = new URLSearchParams();
+	    		params.append("mobile", objApp.mobile );
+	  			params.append("userNo", sessionStorage.getItem("id") );
+	  			params.append("today", myDate.toLocaleDateString() );
+	            axios.post("/PubgoWeb/register/shineShoes/quest", params)
+	            .then(function(response){
+	            	const json = response.data;
+	            	if(json.code == "200")
+	            	{
+	            		console.log(json.data.appraises);
+	            		console.log(json.data.appraises.length);
+	            		objApp.list = json.data.appraises;
+	            		vant.Toast.clear();           // 清除加载
+	                }
+	            	else{
+	                    vant.Toast.clear();     // 清除加载
+	                    vant.Toast.fail(json.msg);
+	                    console.error(json.msg);
+	                }
+	            })
+	            .catch(function (error) {
+	    	    	// 请求发送失败
+		   	        vant.Toast.clear();  
+		   	        vant.Toast.fail(error);
+		   	        console.error(error);
+				});
+    		},
+	    });
+	  	
+	  	app.use(vant);
+	  	app.use(vant.Lazyload);
+	  	app.mount('#app');
+	  	
+	  	
+	  	 
+
+	</script>
+
+	
+</body>
+</html>

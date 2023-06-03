@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="keywords" content="">
+	<meta name="author" content="">
+	<meta name="robots" content="">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	
+	<!-- 此处为页面标题 -->
+	<title>护理登记</title>
+	
+	<!-- 引入图标文件 -->
+    <link rel="shortcut icon" href="/PubgoWeb/favicon.ico" type="image/x-icon" />
+    
+    <!-- 引入vant样式文件 -->
+	<link
+	  rel="stylesheet"
+	  href="/PubgoWeb/assets/vant/index.css"
+	/>
+    
+	<link href="/PubgoWeb/static/css/nice-select.css" rel="stylesheet">
+	<link href="/PubgoWeb/static/css/owl.carousel.css" rel="stylesheet">
+	
+	<!-- 自定义css，预加载必须 -->
+    <link href="/PubgoWeb/static/css/style.css" rel="stylesheet">
+    
+    <!-- 引入 Vue , Vant和 axios 的 JS 文件 -->
+	<script src="/PubgoWeb/assets/vue/vue.js"></script>
+	<script src="/PubgoWeb/assets/vant/vant.min.js"></script>
+	<script src="/PubgoWeb/assets/axios/axios.min.js"></script>
+    <!-- 引入 自定义 的 JS 文件 -->
+    <script src="/PubgoWeb/static/js/customize.js"></script>
+    
+	<style type="text/css">
+		
+	</style>
+	
+</head>
+<body>
+
+    <!--*******************
+     	   预加载程序启动
+    ********************-->
+    <div id="preloader">
+		<div class="lds-ripple">
+			<div></div>
+			<div></div>
+		</div>
+    </div>
+    <!--*******************
+       	 预紧器端
+    ********************-->
+
+    <!--**********************************
+       	主包装器开始
+    ***********************************-->
+    <div id="main-wrapper">
+    	<van-pull-refresh
+		  v-model="isLoading"
+		  success-text="刷新成功"
+		  @refresh="onRefresh"
+		>
+		
+        
+		
+		<!--**********************************
+            	内容正文开始
+        ***********************************-->
+		<div class="content-body" style="padding-top: 0px;">
+            <!-- row -->
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-xl-6">
+						<div class="row">
+							<!-- 登记表单 -->
+							<div class="col-xl-12">
+								<div class="card">
+									<van-form scroll-to-error @submit="onSubmit">
+							   			<van-cell-group inset>
+								   			<van-field
+												v-model = "tel"
+												type = "tel"
+												label = "手机号"
+												placeholder = "请输入手机号码"
+												maxlength = 11
+												required
+												@blur = "telFieldBlur"
+												:rules="[{ validator:telValidator, message: '请输入11位手机号数字' }]"
+											></van-field>
+											
+											<van-field 
+												v-if = "nursingCheck"
+											    v-model = "nursing"
+											    label="护理卡"
+											    readonly
+											></van-field>
+											
+											<van-field 
+												v-if = "integralCheck"
+											    v-model = "integralToString"
+											    label="积分"
+											    readonly
+											    :rules="[{ validator:integralValidator, message: '剩余积分不能小于0' }]"
+											    
+											></van-field>	 
+											
+											<van-field 
+												v-if = "userCheck"
+											    v-model = "user"
+											    label="非会员"
+											    readonly
+											></van-field>
+											
+											<van-field
+											    v-model="userName"
+											    label="用户名"
+											    placeholder="请输入客户性名"
+											></van-field>	 
+											
+								   			<van-field  
+								   			label="擦鞋数量"
+								   			@click = "ShoesNumClick"
+								   			>
+												<template #input>
+													<van-stepper v-model="nursingDetail[0].number" theme="round" button-size="22" min="0" integer />
+												</template>
+											</van-field>
+											
+								   			<van-field  
+								   			label="洗鞋数量"
+								   			@click = "ShoesNumClick"
+								   			:rules="[{ validator:numValidator, message: '请填写擦鞋或洗鞋的数量' }]"
+								   			>
+												<template #input>
+													<van-stepper v-model="nursingDetail[1].number" theme="round" button-size="22" min="0" integer/>
+												</template>
+											</van-field>
+								   				
+											<van-field  label="图片上传">
+												<template #input>
+													<van-uploader v-model="fileList" max-count="1"/>
+												</template>
+											</van-field>
+											
+											<van-field
+												v-model="remark"
+												rows="2"
+								  				autosize
+												label="备注"
+												type="textarea"
+								  				maxlength="100"
+								  				show-word-limit
+												placeholder="可输入备注信息"
+											></van-field>
+										</van-cell-group>
+							   			
+										<div style="margin: 16px;">
+									    	<van-button 
+									    	round 
+									    	block 
+									    	type="danger" 
+									    	:loading="btLoading"
+									    	loading-text="信息提交中"
+									    	native-type="submit" >提交</van-button>
+										</div>
+									</van-form>
+								</div>
+							</div>
+							
+						</div>
+					</div>
+				</div>	
+            </div>
+        </div>
+        <!--**********************************
+            	内容正文 结束
+        ***********************************-->
+		
+        <!--**********************************
+            Footer start
+        ***********************************-->
+        <div class="footer">
+            <div class="copyright">
+                <p>Copyright &copy; 2022.深圳市步步高鞋商业有限公司 All rights reserved.</p>
+            </div>
+        </div>
+        <!--**********************************
+            Footer end
+        ***********************************-->
+
+
+	</div>
+    <!--**********************************
+       	主包装器结束
+    ***********************************-->
+
+    <!--**********************************
+        Scripts
+    ***********************************-->
+    <!-- Required vendors -->
+    <script src="/PubgoWeb/static/js/global.min.js"></script>
+	<script src="/PubgoWeb/static/js/Chart.bundle.min.js"></script>
+	<script src="/PubgoWeb/static/js/jquery.nice-select.min.js"></script>
+	
+	<script src="/PubgoWeb/static/js/Chart.bundle.min.js"></script>
+	
+	<!-- Chart piety plugin files -->
+    <script src="/PubgoWeb/static/js/jquery.peity.min.js"></script>
+	
+	<!-- Dashboard 1 -->
+	<script src="/PubgoWeb/static/js/dashboard-1.js"></script>
+	
+	<script src="/PubgoWeb/static/js/owl.carousel.js"></script>
+	
+    <script src="/PubgoWeb/static/js/custom.min.js"></script>
+	<script src="/PubgoWeb/static/js/dlabnav-init.js"></script>
+	<script src="/PubgoWeb/static/js/demo.js"></script>
+    <script src="/PubgoWeb/static/js/styleSwitcher.js"></script>
+	
+	<script>
+		//获取URL参数值
+		function getQueryString(name) {
+		    var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
+		    var r = window.location.search.substr(1).match(reg);
+		    if (r != null) {
+		        return unescape(r[2]);
+		    }
+		    return null;
+		}
+	
+		const app = Vue.createApp({
+			data(){
+				return{
+					customerId : '',         //店铺id
+	    			tel : '',                //手机号
+	    			nursingCheck : false,    //护理卡表单组件判断
+	    			nursing : '',            //护理卡
+	    			integralCheck : false,   //积分表单组件判断
+	    			integralToString : '',   //积分
+	    			integral : '',           //积分
+	    			userCheck : false,       //用户表单组件判断
+	    			user : '',               //用户
+					payment: '',             //用户付款方式 
+	    			nursingDetail : [
+	    				{item:"擦鞋", renge:"擦鞋", number:0,},
+	    				{item:"洗鞋", renge:"洗鞋", number:0,}
+	    			],
+	    			fileList: [],            //文件
+	    			remark: '',              //客户备注
+	    			btLoading : false,       //按钮加载状态判断
+					message: {
+						code : '200',
+						msg : '',
+					},
+	    			isLoading:false,         //页面刷新控制器
+				}
+			},
+			methods:{
+	    		//刷新，重新加载当前网页
+	    		onRefresh(){
+	    			window.location.reload();
+	    			this.isLoading = false;
+	    		},
+	    		//重置组件
+	    		resetComponent(){
+					this.tel = "";
+	    			this.nursingCheck  =  false;
+	    			this.nursing = "";
+	    			this.integralCheck  =  false;
+	    			this.integral = "";
+	    			this.userCheck  =  false;
+	    			this.user = "";
+	    			this.userName = "";
+					for ( i=0; i<this.nursingDetail.length; i++){
+						this.nursingDetail[i].number = 0;
+					}
+					this.message.code = 200;
+					this.message.msg = "",
+					this.remark = "";
+					this.fileList = [];
+	    		},
+	    		
+	    		//校验手机号
+	    		telValidator(val) {
+	    			if ( !(/1\d{10}/.test(val)) ){
+	    				console.error("请输入11位手机号数字");
+	    			}
+	    			return /1\d{10}/.test(val);
+	    		},
+				
+				//校检手机号信息
+				telFieldBlur(){
+					// 展示加载
+		    		vant.Toast.loading({
+	    	            duration: 0, 		
+	    	            forbidClick: true,
+	    	            message: "手机号验证中...."
+	    	        });
+					const objApp = this;
+		    		axios.get('/PubgoWeb/frontEnd/vip/checkVip?tel='+this.tel)
+		    			.then(function (response) {
+		    			const json = response.data;
+			  	        if(json.code == "200")
+			  	        {
+			  	            console.log(json.data);
+			  	            //校验手机号是否为会员，且是否失效
+			  	            if ( json.data.payment == "nursingCard" ){
+			  	            	//重置组件
+			  	            	objApp.resetComponent();
+			  	            	objApp.nursingCheck = true;
+								objApp.tel = json.data.nursingCard.vip;
+			  	            	objApp.nursing = json.data.nursingCard.begainDateToString
+			  	            		+ " -- " + json.data.nursingCard.expireDateToString;
+			  	            	objApp.userName = json.data.vip.name;
+			  	            }else if ( json.data.payment == "integral" ){
+			  	            	objApp.resetComponent();
+			  	            	objApp.integralCheck = true;
+			  	            	objApp.nursingCheck = true;
+			  	            	objApp.nursing = "已过期";
+								objApp.tel = json.data.integral.vip;
+			  	            	objApp.integralToString = json.data.integral.integralAmount+"分";
+			  	            	objApp.integral = json.data.integral.integralAmount;
+			  	            	objApp.userName = json.data.vip.name;
+			  	            }else{
+			  	            	objApp.resetComponent();
+			  	            	objApp.userCheck = true;
+								objApp.tel = json.data.tel;
+								if (json.data.user.length != 0 ){
+									objApp.userName = json.data.user[0].name;
+								}
+			  	            	objApp.user = "已护理"+json.data.user.length+"次(普通用户至多可护理3次)";
+								if (json.data.user.length >= 3 ){
+									objApp.message.code = 201;
+									objApp.message.msg = "普通用户至多可护理3次"
+								}
+			  	            }
+							objApp.payment = json.data.payment;
+							vant.Toast.clear();     // 清除加载
+			  	        } else {
+			  	        	objApp.message.code = 202;
+			  	        	objApp.message.msg = json.msg;
+			  	        	vant.Toast.fail("错误原因: "+json.msg);
+				   	        console.error("错误代码: "+json.code+"  错误原因: "+json.msg);	
+			  	        }	
+			  	      	
+		    		}).catch(function (error) {
+		    			// 请求发送失败
+		    			objApp.message.code = 202;
+			  	        objApp.message.msg = "校检手机号发生错误";
+		    			vant.Toast.fail("校检手机号发生错误");
+			            console.error(error);
+		    		});
+		    		
+				},
+				//校检积分
+				integralValidator(val){
+					if ( this.payment == "integral" && (this.integral 
+						- this.nursingDetail[0].number * 10
+	    				- this.nursingDetail[1].number * 10 < 0) )
+					{
+						this.message.code = 202;
+						this.message.msg = "剩余积分不能小于0"
+						return false;
+					}
+					return true;
+				},
+				
+	    		//擦鞋，洗鞋数量变更，积分自动抵扣。
+	    		ShoesNumClick(){
+	    			this.integralToString = this.integral + "  -  " + (
+	    				this.nursingDetail[0].number * 10 
+	    				+ this.nursingDetail[1].number * 10)
+	    				+ "  =  " + ( this.integral - this.nursingDetail[0].number * 10
+	    				- this.nursingDetail[1].number * 10 );
+	    		},
+	    		//校检擦鞋洗鞋数量是否为0
+	    		numValidator(val){
+	    			if( this.nursingDetail[0].number + this.nursingDetail[1].number  == 0 ){
+	    				return false;
+	    			}
+	    			return true;
+	    		},
+	    		onSubmit() {
+					const objApp = this;
+					
+					//提交按钮显示加载状态，阻止用户再次点击提交按钮
+					objApp.btLoading = true;
+	    			
+		    		//验证错误
+					if ( objApp.message.code != 200 ){
+						vant.Toast.fail( objApp.message.msg );	
+						return ;
+					}
+					
+					//提交表单数据
+		    		const params = new FormData();
+		    		params.append("tel",  objApp.tel);
+		    		params.append("name",  objApp.userName);
+		    		params.append("customerID",  objApp.customerId);
+		    		params.append("step",  3);
+		    		params.append("score", 0);
+		    		params.append("input",  1);
+		    		params.append("payment",  objApp.payment);
+		    		params.append("userRemake",  objApp.remark);
+		    		params.append("employeeRemake",  '');
+		    		params.append("nursingDetail", JSON.stringify(objApp.nursingDetail));
+		    		//判断是否有图片上传
+		    		if (objApp.fileList.length == 0 ){
+		    			//默认提交地址及HTTP 请求头
+		    			var path = "/PubgoWeb/frontEnd/register/nursing/insertText";
+		    			var config = {
+		    		       		headers: {
+		    		       	        'Content-Type': 'application/x-www-form-urlencoded'
+		    		            }
+		    		    };
+		    		}else{
+		    			params.append("file", objApp.fileList[0].file);
+		    			path = "/PubgoWeb/frontEnd/register/nursing/insertFile";
+		    			config = {
+		    		        	headers: {
+		    		        		'Content-Type': 'multipart/form-data'
+		    		        	}
+		    		    }
+		    		}
+		    		//提交积分数据
+		    		const integral = (objApp.integral 
+							- objApp.nursingDetail[0].number * 10
+		    				- objApp.nursingDetail[1].number * 10);
+		    		const integralChange = -(objApp.nursingDetail[0].number * 10
+	    					+ objApp.nursingDetail[1].number * 10);
+					const data = new URLSearchParams();
+					data.append("payment",objApp.payment);
+					data.append("vip",objApp.tel);
+					data.append("integral",integral);
+					data.append("integralChange", integralChange);
+					data.append("postUser", objApp.customerId);
+					data.append("remark", "用户操作，积分抵扣护理服务");
+					
+		    		axios.all(
+		    			[
+		    				axios.post(path,params,config),
+		    				axios.post("/PubgoWeb/frontEnd/vip/integral/updateIntegral",data)
+		    			]
+		    		).then(
+		    			axios.spread((nursingRes,integralRes)=>{
+		    				const json = nursingRes.data;
+		    				if(nursingRes.data.code == "200"
+		    						&& integralRes.data.code == "200"){
+			    				objApp.resetComponent();
+			    				objApp.btLoading = false;
+			    				window.location.href='/PubgoWeb/frontEnd/appraise/success.html';
+			    			}
+			    			else{
+			    				objApp.btLoading = false;
+			    				vant.Toast.fail("错误原因: "+nursingRes.data.msg
+			    						+"  "+integralRes.data.msg);
+			    		        console.error(nursingRes.data.msg);
+			    		        console.error(integralRes.data.msg);
+			    		        
+			    		    }
+		    			})
+		    		).catch( error=> {
+		    			objApp.btLoading = false;
+		    			// 请求发送失败
+		    			vant.Toast.fail("请求发送失败");
+		    		    console.error(error);
+		    		});
+	    		},
+			},
+			mounted(){
+				const objApp = this;
+				
+				//获取uri的参数id
+				objApp.customerId = getQueryString("id");
+				//若参数为空，则跳转404页面
+				if( objApp.customerId == null){
+					window.location.href='/PubgoWeb/404.html';
+				} 
+				
+				
+	    		
+			}
+		});
+			
+		app.use(vant);
+		app.use(vant.Lazyload);
+		app.mount('#main-wrapper');
+	</script>
+
+</body>
+</html>

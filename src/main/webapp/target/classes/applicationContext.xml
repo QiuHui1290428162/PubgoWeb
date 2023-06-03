@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="
+            http://www.springframework.org/schema/beans
+            http://www.springframework.org/schema/beans/spring-beans.xsd
+            http://www.springframework.org/schema/context
+            http://www.springframework.org/schema/context/spring-context.xsd
+            http://www.springframework.org/schema/task
+            http://www.springframework.org/schema/task/spring-task.xsd
+            http://www.springframework.org/schema/mvc
+            http://www.springframework.org/schema/mvc/spring-mvc.xsd
+            http://www.springframework.org/schema/tx
+            http://www.springframework.org/schema/tx/spring-tx.xsd">
+    <!--
+	    context:component-scan 标签作用
+		在Spring IOC初始化过程中,自动创建并管理com.pubgo及子包中
+		拥有以下注解的对象.
+	    @Repository
+	    @Service
+	    @Controller
+	    @Component
+    -->        
+	<context:component-scan base-package="com.pubgo"></context:component-scan>
+	
+    <!--启用Spring MVC的注解开发模式,并设置Respons响应的字符集-->
+    <mvc:annotation-driven >
+        <mvc:message-converters>
+            <bean class="org.springframework.http.converter.StringHttpMessageConverter">
+                <property name="supportedMediaTypes">
+                    <list>
+						<value>application/json;charset=utf-8</value>
+                        <value>text/html;charset=utf-8</value>
+                    </list>
+                </property>
+            </bean>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+	
+	<!-- 将图片/JS/CSS等静态资源排除在外,可提高执行效率 -->
+    <mvc:default-servlet-handler/>
+    
+  		<!-- 扫描SQL连接属性配置文件 -->
+	<context:property-placeholder location="classpath:jdbc_Mybatis.properties"/>
+	
+     <!-- properties使用注解的方式注入，主要用在java代码中使用注解注入properties文件中相应的value值 -->
+     <!-- 这里是PropertyPlaceholderConfigurer类，它也有个locations属性，也是接收一个数组 -->
+     <bean id="property" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+	    <property name="locations">
+	    	<list>
+	    		<value>classpath:information.properties</value>
+	  		</list>
+	    </property>
+	</bean>
+     
+    <!-- 配置数据连接池、数据源 -->
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+		<property name="driverClass" value="${jdbc.driver}"></property>
+		<property name="jdbcUrl" value="${jdbc.url}"></property>
+		<property name="user" value="${jdbc.username}"></property>
+		<property name="password" value="${jdbc.password}"></property>
+	</bean>
+	
+	<!-- 配置spring , Mybatis整合 -->
+	<bean id="sqlSessionFactory" class="com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean">
+		<!-- 指定Mybatis全局配置文件的位置 -->
+		<property name="configLocation" value="classpath:mybatis.xml"></property>
+		<property name="dataSource" ref="dataSource"></property>
+		<!-- 指定mapper文件的位置 -->
+		<property name="mapperLocations"  value="classpath:mapper/*.xml"></property>
+		<!-- 配置mybatis分页插件 -->
+		<property name="plugins">
+			<array>
+				<bean class="com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor">
+					<property name="interceptors">
+						<list>
+							<bean class="com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor"></bean>
+						</list>
+					</property>	
+				</bean>
+			</array>
+		</property>
+	</bean>
+	
+	<!-- 配置映射扫描器，将Mybatis接口的实现加入到IOC容器中 -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.pubgo.dao"></property>
+	</bean>
+	
+	<!-- 定义事务管理器 -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+	<tx:annotation-driven transaction-manager="transactionManager"/>
+
+	<!-- 启用注解形式的定时任务功能 -->
+    <task:annotation-driven/>
+
+    <!-- 启用Spring MVC文件上传功能 -->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="defaultEncoding" value="UTF-8"/>
+    </bean>
+</beans>

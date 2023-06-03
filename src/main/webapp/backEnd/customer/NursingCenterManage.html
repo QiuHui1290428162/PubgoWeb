@@ -1,0 +1,1691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="keywords" content="">
+	<meta name="author" content="">
+	<meta name="robots" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	
+	<!-- 此处为页面标题 -->
+	<title>护理管理</title>
+	
+	<!-- 引入图标文件 -->
+    <link rel="shortcut icon" href="/PubgoWeb/favicon.ico" type="image/x-icon" />
+	
+	<!-- 引入vant,bootstrap样式文件 -->
+	<link
+	  rel="stylesheet"
+	  href="/PubgoWeb/assets/vant/index.css"
+	/>
+	<link rel="stylesheet" href="/PubgoWeb/assets/bootstrap/css/bootstrap.min.css" 
+		integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" 
+		crossorigin="anonymous"/>
+    
+	<link href="/PubgoWeb/static/css/nice-select.css" rel="stylesheet">
+	<link href="/PubgoWeb/static/css/owl.carousel.css" rel="stylesheet">
+	<!-- 自定义css，预加载必须 -->
+    <link href="/PubgoWeb/static/css/style.css" rel="stylesheet">
+    
+    
+    <!-- 
+    	.header-profile   设定logo图标大小
+    	.vanTabs  设定标签页宽度
+    	.vanTab   设定背景颜色
+    	.mt-4  .mb-4 设定筛选上下边框宽度
+    	footer  查询，重置按钮绑定下边框
+    	.van-tabs--line .van-tabs__wrap   设置标签页头行高
+    	.van-picker__toolbar   設置時間選擇器的頂部欄高度
+    	.van-card             卡片
+    	.van-card__num        卡片数量设置
+    	.divider              分割线
+    	.appraise             评价栏样式
+     -->
+	<style type="text/css">
+		.header-profile img{
+			width: 2.5rem;
+			height: 2.5rem;
+		}
+		.vanTabs{
+			width : 100%;
+		}
+		.vanTab{
+			background-color: rgb(249, 249, 249);
+		}
+		.mt-4 {
+		  margin-top: 0rem !important;
+		  
+		}
+		.mb-4 {
+		  margin-bottom: 0rem !important;
+		}
+		.van-card{
+			background: rgb(255, 255, 255);
+			padding : 0px;
+		}
+		.van-card__num{
+			font-size: 15px;
+		}
+		footer{
+			position:fixed;
+			bottom:0;
+			z-index:999;
+			width: 94%;
+			margin: 0% 2% 4% 4%;
+		}
+		.conditionForm{
+			margin-top: 25px;
+		}
+		.van-tabs--line .van-tabs__wrap {
+		  height: 50px;
+		}
+		.van-picker__toolbar{
+			height: 0px;
+		}
+		.van-button{
+			margin: 5px;
+		}
+		.divider {
+	    	width: 100%;
+	    	height: 0.5px;
+	    	background-color: #cccccc;
+	    	margin: 3px 0;
+	  	}
+	</style>
+	
+</head>
+<body>
+
+    <!--*******************
+     	   预加载程序启动
+    ********************-->
+    <div id="preloader">
+		<div class="lds-ripple">
+			<div></div>
+			<div></div>
+		</div>
+    </div>
+    <!--*******************
+       	 预紧器端
+    ********************-->
+
+    <!--**********************************
+       	主包装器开始
+    ***********************************-->
+    <div id="main-wrapper">
+    	<van-pull-refresh v-model="refreshLoading" @refresh="onRefresh" success-text="刷新成功">
+        <!--**********************************
+           	导航标头开始
+        ***********************************-->
+        <div class="nav-header">
+            <a href="/PubgoWeb/index.html" class="brand-logo">
+				
+				<img src="/PubgoWeb/static/image/logo_index.jpg" alt="首页"  width="48" height="20"/>
+				
+				<svg class="brand-title" xmlns="http://www.w3.org/2000/svg" width="134.01" height="48.365" viewbox="0 0 134.01 48.365">
+				  <g id="Group_38" data-name="Group 38" transform="translate(-133.99 -40.635)">
+					<text id="Job_Admin_Dashboard" data-name="Job Admin Dashboard" transform="translate(134 85)" fill="#787878" font-size="12" font-family="Poppins-Light, Poppins" font-weight="300"><tspan x="0" y="0">香港步步高国际集团</tspan></text>
+					<text id="Job_Admin_Dashboard" data-name="Job Admin Dashboard" transform="translate(134 63)" fill="#000000" font-size="17" font-family="Poppins-Light, Poppins" font-weight="300"><tspan x="0" y="0">PUBGO步步高鞋</tspan></text>
+					
+				  </g>
+				</svg>
+            </a>
+            <!-- 侧边栏显示组件 -->
+            <div class="nav-control">
+                <div class="hamburger">
+                    <span class="line"></span><span class="line"></span><span class="line"></span>
+                </div>
+            </div>
+        </div>
+        <!--**********************************
+         	 导航标头结束
+        ***********************************-->
+		
+		
+		
+		<!--**********************************
+           	页头开始
+        ***********************************-->
+        <div class="header">
+            <div class="header-content">
+                <nav class="navbar navbar-expand">
+                    <div class="collapse navbar-collapse justify-content-between">
+                    	<!-- 设置页面名称 -->
+                        <div class="header-left">
+							<div class="dashboard_bar">
+                               	工作台
+                            </div>
+                        </div>
+                        <ul class="navbar-nav header-right">
+							<li class="nav-item dropdown header-profile">
+								<a class="nav-link" href="/PubgoWeb/backEnd/customer/NursingCenterRegistration.html" role="button" v-if="type=='staff'">
+                                   	 <img alt="登记" src="/PubgoWeb/static/image/登记.svg" >
+                                </a>
+                                <a class="nav-link" href="javascript:void(0);" role="button" data-bs-toggle="dropdown">
+                                   	 <img alt="员工管理" src="/PubgoWeb/static/image/员工.svg" >
+                                </a>
+                                <!--  -->
+                                <div class="dropdown-menu dropdown-menu-end">
+                                    <a href="/PubgoWeb/index.html" class="dropdown-item ai-icon">
+                                        <svg id="icon-user2" xmlns="http://www.w3.org/2000/svg" class="text-primary" width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                                        <span class="ms-2">个人中心 </span>
+                                    </a>
+                                    <a href="http://http://www.pbgobbg.com:8282/pda/" class="dropdown-item ai-icon">
+                                        <svg id="icon-inbox1" xmlns="http://www.w3.org/2000/svg" class="text-success" width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                                        <span class="ms-2">OA邮箱 </span>
+                                    </a>
+                                    <a href="/PubgoWeb/login.html" class="dropdown-item ai-icon">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="text-danger" width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                                        <span class="ms-2">退出登录 </span>
+                                    </a>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+				</nav>
+			</div>
+		</div>
+        <!--**********************************
+           	页头结束
+        ***********************************-->
+
+        <!--**********************************
+           	侧边栏开始
+        ***********************************-->
+        <div class="dlabnav">
+            <div class="dlabnav-scroll">
+				<div class="dropdown header-profile2 ">
+					<a class="nav-link " href="javascript:void(0);" role="button" data-bs-toggle="dropdown">
+						<div class="header-info2 d-flex align-items-center">
+							<img src="/PubgoWeb//static/image/people.svg" width="20"  alt="">
+							<div class="d-flex align-items-center sidebar-info">
+								<div>
+									<span class="font-w400 d-block">ID : {{id}}</span>
+									<small class="text-end font-w400">NAME : {{name}}</small>
+								</div>	
+							</div>
+						</div>
+					</a>
+				</div>
+				<ul class="metismenu" id="menu">
+					<template v-for="(x, i) in categoryList">
+	                    <li><a class="has-arrow " href="javascript:void(0);" aria-expanded="false">
+								<i :class="x.image"></i>
+								<span class="nav-text">{{x.name}}</span>
+							</a>
+	                        <ul aria-expanded="false">
+	                        	<template v-for="(y, j) in x.categorys">
+									<li><a :href="y.path">{{y.name}}</a></li>
+								</template>	
+							</ul>
+	                    </li>
+                    </template>	
+                </ul>
+				<div class="plus-box">
+					<p class="fs-14 font-w600 mb-2">Pubgo mobile ERP management system<br></p>
+				</div>
+				<div class="copyright">
+					<p><strong>PUBGO Job Admin</strong> © 2021 All Rights Reserved</p>
+					<p class="fs-12"> Made with<span class="heart"></span> by pubgo</p>
+				</div>
+			</div>
+        </div>
+        <!--**********************************
+           	侧边栏结束
+        ***********************************-->
+		
+		<!--**********************************
+            	内容正文开始
+        ***********************************-->
+		<div class="content-body">
+			<div class="container-fluid">
+				<div class="d-flex align-items-center flex-wrap search-job bg-white px-0 mb-4">
+					<!-- 搜索栏 -->
+					<div class="col-xl-8 col-xxl-6 col-lg-6 col-12 d-md-flex job-title-search pe-0">
+						<van-search v-model="value" 
+						placeholder="请输入店铺名称/店铺号/操作人/备注信息/订单编号" 
+						shape="round"
+						show-action
+						@search="onSearch">
+							<!-- 筛选组件，启动侧边栏 -->
+							<template #action>
+								<div @click="showTopClick"><van-icon name="filter-o" size="25"/></div>
+							</template>
+						</van-search>
+					</div>
+					<!-- *********************标签页*************************** -->
+					<div class="vanTabs">
+						<van-tabs v-model:active="active" sticky>
+						  <!-- ******************* 标签 1 **************************-->
+						  <van-tab class="vanTab" title="全部">
+						  	<div class="row">			  	
+								<div class="col-xl-9">
+								<template v-if="true">	
+									<div  @click="onScreen" style="color:#fc0202;padding-left: 18px;line-height: 44px;font-size: 14px;">
+										<div v-if="order==0">下单时间由近及远    <van-icon name="/PubgoWeb/static/image/s_上箭头.svg" /></div>
+										<div v-if="order==1">下单时间由远及近    <van-icon name="/PubgoWeb/static/image/s_下箭头.svg" /></div>
+									</div>
+								</template>
+								<!-- van-list实现瀑布式滚动 -->
+								<van-list
+									v-model:loading="loading"
+									loading-text="正在拼命加载"
+									v-model:error = "error"
+									error-text="请求失败，点击重新刷新页面"
+									:finished="finished"
+									finished-text="没有更多了"
+									@load="loadMore"
+									v-if="list.length!=0"
+								>
+									<!-- 卡片 -->
+									<div class="tab-content"  v-for="(item, index) in list">
+										<div class="tab-pane fade show active" id="Boxed" role="tabpanel">
+											<div class="row">
+												<div class="col-xl-3 col-xxl-4  col-md-4 col-sm-6">
+													<div class="card">
+														<div class="jobs2 card-body">
+															<div>
+																下单时间：{{item.createTimeToString}}
+																<span style="float:right;font-weight:bold;">{{item.stepName}}</span>
+															</div>
+															<div>订单编号：{{item.nursingID}}</div>
+															<van-card
+																:thumb="item.imagePath"
+																@click-thumb = "onShow(index)"
+																@click="onDetails(item.nursingID)"
+															>
+																<template #title>
+															        <div style="font-size: 12px;font-weight: bold;margin-right: 10px">店铺：{{item.customerNa}} ({{item.operator}})</div>
+															        <div v-if="item.step==4"><span style="line-height: 30px;font-weight: bold">评分：</span>
+														                <van-rate v-model="item.score" color="#FF0000" void-icon="star" readonly
+														            allow-half></van-rate></div>
+															    </template>
+															    <template #tags>
+																	<div style="margin-top:5px;" v-if="item.remark!=''">
+																		<van-tag plain type="danger" style="margin-top:5px;">
+																	    	店铺备注
+																		</van-tag>   
+																	    	{{item.remark}}
+																	</div>
+																	<div style="margin-top:5px;" v-if="item.employeeRemake!=null">
+																	    <van-tag plain type="warning" >
+																	    	员工备注
+																	    </van-tag>   
+																	    	{{item.employeeRemake}}
+																	</div>
+																</template>
+																<template #num>
+																	<div>数量: {{item.quantity}}</div>
+																</template>
+															</van-card>
+															<div style="text-align: right;">
+																<van-button type="default" size="normal" @click="deleteNursing(item.nursingID,index)" v-if="item.step==1&&type=='staff'">删除</van-button>
+																<van-button type="default" size="normal" @click="updateNursing(item.nursingID)" v-if="item.step==1&&type=='staff'">修改</van-button>
+																<van-button type="default" size="normal" @click="showBottomClick(index)" v-if="type=='account'">备注</van-button>
+																<van-button type="primary" size="normal" @click="showBottomConfirmClick(index)" v-if="item.step==1&&type=='account'">确认</van-button>
+																<van-button type="warning" size="normal" @click="revokeNursingButton(item.nursingID,index,1)" v-if="item.step==2&&type=='account'">取消确认</van-button>
+																<van-button type="danger"  size="normal" @click="showBottomEmitClick(index)" v-if="item.step==2&&type=='account'">发货</van-button>
+																<van-button type="warning" size="normal" @click="revokeNursingButton(item.nursingID,index,2)" v-if="item.step==3&&type=='account'">取消发货</van-button>
+																<van-button type="warning" size="normal" @click="staffRevokeNursingButton(item.nursingID,index,3)" v-if="item.step==4&&type=='staff'">取消收货</van-button>
+																<van-button type="danger" size="normal" @click="showBottomTakeOverClick(index)" v-if="item.step==3&&type=='staff'">确认收货</van-button>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>	
+										</div>
+									</div>
+								</van-list>
+									<!-- 卡片 -->
+									<div class="tab-content" v-if="list.length==0">
+										<div class="tab-pane fade show active" id="Boxed" role="tabpanel">
+											<div class="row">
+												<div class="col-xl-3 col-xxl-4  col-md-4 col-sm-6">
+													<van-empty image="search" description="无护理信息"></van-empty>
+												</div>
+											</div>	
+										</div>
+									</div>
+								</div>
+							</div>
+						</van-tab>
+						<!-- ******************* 标签 2 **************************-->
+						<van-tab class="vanTab" title="待确认">
+						  	<div class="row">			  	
+								<div class="col-xl-9">
+								<template v-if="true">	
+									<div  @click="onScreen" style="color:#fc0202;padding-left: 18px;line-height: 44px;font-size: 14px;">
+										<div v-if="order==0">下单时间由近及远    <van-icon name="/PubgoWeb/static/image/s_上箭头.svg" /></div>
+										<div v-if="order==1">下单时间由远及近    <van-icon name="/PubgoWeb/static/image/s_下箭头.svg" /></div>
+									</div>
+								</template>
+								<!-- van-list实现瀑布式滚动 -->
+								<van-list
+									v-model:loading="loading"
+									loading-text="正在拼命加载"
+									v-model:error = "error"
+									error-text="请求失败，点击重新刷新页面"
+									:finished="finished"
+									finished-text="没有更多了"
+									@load="loadMore"
+									v-if="list.length!=0"
+								>
+								<!-- 卡片 -->
+								<div v-for="(item, index) in list">
+									<div class="tab-content"    v-if="item.step==1">
+										<div class="tab-pane fade show active" id="Boxed" role="tabpanel">
+											<div class="row">
+												<div class="col-xl-3 col-xxl-4  col-md-4 col-sm-6">
+													<div class="card">
+														<div class="jobs2 card-body">
+															<div>
+																下单时间：{{item.createTimeToString}}
+																<span style="float:right;font-weight:bold;">{{item.stepName}}</span>
+															</div>
+															<div>订单编号：{{item.nursingID}}</div>
+															<van-card
+																:thumb="item.imagePath"
+																@click="onDetails(item.nursingID)"
+																@click-thumb = "onShow(index)"
+															>
+																<template #title>
+															        <div style="font-size: 12px;font-weight: bold">店铺：{{item.customerNa}} ({{item.operator}})</div>
+															    </template>
+															    <template #tags>
+																	<div style="margin-top:5px;" v-if="item.remark!=''">
+																		<van-tag plain type="danger" style="margin-top:5px;">
+																	    	店铺备注
+																		</van-tag>   
+																	    	{{item.remark}}
+																	</div>
+																	<div style="margin-top:5px;" v-if="item.employeeRemake!=null">
+																	    <van-tag plain type="warning" >
+																	    	员工备注
+																	    </van-tag>   
+																	    	{{item.employeeRemake}}
+																	</div>
+																</template>
+																<template #num>
+																	<div>数量: {{item.quantity}}</div>
+																</template>
+															</van-card>
+															<div style="text-align: right;">
+																<van-button type="default" size="normal" @click="deleteNursing(item.nursingID,index)" v-if="item.step==1&&type=='staff'">删除</van-button>
+																<van-button type="default" size="normal" @click="updateNursing(item.nursingID)" v-if="item.step==1&&type=='staff'">修改</van-button>
+																<van-button type="default" size="normal" @click="showBottomClick(index)" v-if="type=='account'">备注</van-button>
+																<van-button type="primary" size="normal" @click="showBottomConfirmClick(index)" v-if="item.step==1&&type=='account'">确认</van-button>
+																<van-button type="warning" size="normal" @click="revokeNursingButton(item.nursingID,index,1)" v-if="item.step==2&&type=='account'">取消确认</van-button>
+																<van-button type="danger"  size="normal" @click="showBottomEmitClick(index)" v-if="item.step==2&&type=='account'">发货</van-button>
+																<van-button type="warning" size="normal" @click="revokeNursingButton(item.nursingID,index,2)" v-if="item.step==3&&type=='account'">取消发货</van-button>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>	
+										</div>
+									</div>
+								</div>
+								</van-list>
+									<!-- 卡片 -->
+									<div class="tab-content" v-if="list.length==0">
+										<div class="tab-pane fade show active" id="Boxed" role="tabpanel">
+											<div class="row">
+												<div class="col-xl-3 col-xxl-4  col-md-4 col-sm-6">
+													<van-empty image="search" description="无护理信息"></van-empty>
+												</div>
+											</div>	
+										</div>
+									</div>
+								</div>
+							</div>
+						</van-tab>
+						<!-- ******************* 标签 3 **************************-->
+						<van-tab class="vanTab" title="待发货">
+						  	<div class="row">			  	
+								<div class="col-xl-9">
+								<template v-if="true">	
+									<div  @click="onScreen" style="color:#fc0202;padding-left: 18px;line-height: 44px;font-size: 14px;">
+										<div v-if="order==0">下单时间由近及远    <van-icon name="/PubgoWeb/static/image/s_上箭头.svg" /></div>
+										<div v-if="order==1">下单时间由远及近    <van-icon name="/PubgoWeb/static/image/s_下箭头.svg" /></div>
+									</div>
+								</template>
+								<!-- van-list实现瀑布式滚动 -->
+								<van-list
+									v-model:loading="loading"
+									loading-text="正在拼命加载"
+									v-model:error = "error"
+									error-text="请求失败，点击重新刷新页面"
+									:finished="finished"
+									finished-text="没有更多了"
+									@load="loadMore"
+									v-if="list.length!=0"
+								>
+								<!-- 卡片 -->
+								<div v-for="(item, index) in list">
+									<div class="tab-content"    v-if="item.step==2" >
+										<div class="tab-pane fade show active" id="Boxed" role="tabpanel">
+											<div class="row">
+												<div class="col-xl-3 col-xxl-4  col-md-4 col-sm-6">
+													<div class="card">
+														<div class="jobs2 card-body">
+															<div>
+																下单时间：{{item.createTimeToString}}
+																<span style="float:right;font-weight:bold;">{{item.stepName}}</span>
+															</div>
+															<div>订单编号：{{item.nursingID}}</div>
+															<van-card
+																:thumb="item.imagePath"
+																@click="onDetails(item.nursingID)"
+																@click-thumb = "onShow(index)"
+															>
+																<template #title>
+															        <div style="font-size: 12px;font-weight: bold">店铺：{{item.customerNa}} ({{item.operator}})</div>
+															    </template>
+															    <template #tags>
+																	<div style="margin-top:5px;" v-if="item.remark!=''">
+																		<van-tag plain type="danger" style="margin-top:5px;">
+																	    	店铺备注
+																		</van-tag>   
+																	    	{{item.remark}}
+																	</div>
+																	<div style="margin-top:5px;" v-if="item.employeeRemake!=null">
+																	    <van-tag plain type="warning" >
+																	    	员工备注
+																	    </van-tag>   
+																	    	{{item.employeeRemake}}
+																	</div>
+																</template>
+																<template #num>
+																	<div>数量: {{item.quantity}}</div>
+																</template>
+															</van-card>
+															<div style="text-align: right;">
+																<van-button type="default" size="normal" @click="deleteNursing(item.nursingID,index)" v-if="item.step==1&&type=='staff'">删除</van-button>
+																<van-button type="default" size="normal" @click="updateNursing(item.nursingID)" v-if="item.step==1&&type=='staff'">修改</van-button>
+																<van-button type="default" size="normal" @click="showBottomClick(index)" v-if="type=='account'">备注</van-button>
+																<van-button type="primary" size="normal" @click="showBottomConfirmClick(index)" v-if="item.step==1&&type=='account'">确认</van-button>
+																<van-button type="warning" size="normal" @click="revokeNursingButton(item.nursingID,index,1)" v-if="item.step==2&&type=='account'">取消确认</van-button>
+																<van-button type="danger"  size="normal" @click="showBottomEmitClick(index)" v-if="item.step==2&&type=='account'">发货</van-button>
+																<van-button type="warning" size="normal" @click="revokeNursingButton(item.nursingID,index,2)" v-if="item.step==3&&type=='account'">取消发货</van-button>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>	
+										</div>
+									</div>
+								</div>
+								</van-list>
+									<!-- 卡片 -->
+									<div class="tab-content" v-if="list.length==0">
+										<div class="tab-pane fade show active" id="Boxed" role="tabpanel">
+											<div class="row">
+												<div class="col-xl-3 col-xxl-4  col-md-4 col-sm-6">
+													<van-empty image="search" description="无护理信息"></van-empty>
+												</div>
+											</div>	
+										</div>
+									</div>
+								</div>
+							</div>
+						</van-tab>
+						<!-- ******************* 标签 4 **************************-->
+						<van-tab class="vanTab" title="待收货">
+						  	<div class="row">			  	
+								<div class="col-xl-9">
+								<template v-if="true">	
+									<div  @click="onScreen" style="color:#fc0202;padding-left: 18px;line-height: 44px;font-size: 14px;">
+										<div v-if="order==0">下单时间由近及远    <van-icon name="/PubgoWeb/static/image/s_上箭头.svg" /></div>
+										<div v-if="order==1">下单时间由远及近    <van-icon name="/PubgoWeb/static/image/s_下箭头.svg" /></div>
+									</div>
+								</template>
+								<!-- van-list实现瀑布式滚动 -->
+								<van-list
+									v-model:loading="loadin·g"
+									loading-text="正在拼命加载"
+									v-model:error = "error"
+									error-text="请求失败，点击重新刷新页面"
+									:finished="finished"
+									finished-text="没有更多了"
+									@load="loadMore"
+									v-if="list.length!=0"
+								>
+								<!-- 卡片 -->
+								<div v-for="(item, index) in list">
+									<div class="tab-content"    v-if="item.step==3" >
+										<div class="tab-pane fade show active" id="Boxed" role="tabpanel">
+											<div class="row">
+												<div class="col-xl-3 col-xxl-4  col-md-4 col-sm-6">
+													<div class="card">
+														<div class="jobs2 card-body">
+															<div>
+																下单时间：{{item.createTimeToString}}
+																<span style="float:right;font-weight:bold;">{{item.stepName}}</span>
+															</div>
+															<div>订单编号：{{item.nursingID}}</div>
+															<van-card
+																:thumb="item.imagePath"
+																@click="onDetails(item.nursingID)"
+																@click-thumb = "onShow(index)"
+															>
+																<template #title>
+															        <div style="font-size: 12px;font-weight: bold">店铺：{{item.customerNa}} ({{item.operator}})</div>
+															    </template>
+															    <template #tags>
+																	<div style="margin-top:5px;" v-if="item.remark!=''">
+																		<van-tag plain type="danger" style="margin-top:5px;">
+																	    	店铺备注
+																		</van-tag>   
+																	    	{{item.remark}}
+																	</div>
+																	<div style="margin-top:5px;" v-if="item.employeeRemake!=null">
+																	    <van-tag plain type="warning" >
+																	    	员工备注
+																	    </van-tag>   
+																	    	{{item.employeeRemake}}
+																	</div>
+																</template>
+																<template #num>
+																	<div>数量: {{item.quantity}}</div>
+																</template>
+															</van-card>
+															<div style="text-align: right;">
+																<van-button type="default" size="normal" @click="deleteNursing(item.nursingID,index)" v-if="item.step==1&&type=='staff'">删除</van-button>
+																<van-button type="default" size="normal" @click="updateNursing(item.nursingID)" v-if="item.step==1&&type=='staff'">修改</van-button>
+																<van-button type="default" size="normal" @click="showBottomClick(index)" v-if="type=='account'">备注</van-button>
+																<van-button type="primary" size="normal" @click="showBottomConfirmClick(index)" v-if="item.step==1&&type=='account'">确认</van-button>
+																<van-button type="warning" size="normal" @click="revokeNursingButton(item.nursingID,index,1)" v-if="item.step==2&&type=='account'">取消确认</van-button>
+																<van-button type="danger"  size="normal" @click="showBottomEmitClick(index)" v-if="item.step==2&&type=='account'">发货</van-button>
+																<van-button type="warning" size="normal" @click="revokeNursingButton(item.nursingID,index,2)" v-if="item.step==3&&type=='account'">取消发货</van-button>
+																<van-button type="danger" size="normal" @click="showBottomTakeOverClick(index)" v-if="item.step==3&&type=='staff'">确认收货</van-button>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>	
+										</div>
+									</div>
+								</div>
+								</van-list>
+									<!-- 卡片 -->
+									<div class="tab-content" v-if="list.length==0">
+										<div class="tab-pane fade show active" id="Boxed" role="tabpanel">
+											<div class="row">
+												<div class="col-xl-3 col-xxl-4  col-md-4 col-sm-6">
+													<van-empty image="search" description="无护理信息"></van-empty>
+												</div>
+											</div>	
+										</div>
+									</div>
+								</div>
+							</div>
+						</van-tab>
+						<!-- ******************* 标签 5 **************************-->
+						<van-tab class="vanTab" title="已完成">
+						  	<div class="row">			  	
+								<div class="col-xl-9">
+								<template v-if="true">	
+									<div  @click="onScreen" style="color:#fc0202;padding-left: 18px;line-height: 44px;font-size: 14px;">
+										<div v-if="order==0">下单时间由近及远    <van-icon name="/PubgoWeb/static/image/s_上箭头.svg" /></div>
+										<div v-if="order==1">下单时间由远及近    <van-icon name="/PubgoWeb/static/image/s_下箭头.svg" /></div>
+									</div>
+								</template>
+								<!-- van-list实现瀑布式滚动 -->
+								<van-list
+									v-model:loading="loadin·g"
+									loading-text="正在拼命加载"
+									v-model:error = "error"
+									error-text="请求失败，点击重新刷新页面"
+									:finished="finished"
+									finished-text="没有更多了"
+									@load="loadMore"
+									v-if="list.length!=0"
+								>
+								<!-- 卡片 -->
+								<div v-for="(item, index) in list">
+									<div class="tab-content"    v-if="item.step==4" >
+										<div class="tab-pane fade show active" id="Boxed" role="tabpanel">
+											<div class="row">
+												<div class="col-xl-3 col-xxl-4  col-md-4 col-sm-6">
+													<div class="card">
+														<div class="jobs2 card-body">
+															<div>
+																下单时间：{{item.createTimeToString}}
+																<span style="float:right;font-weight:bold;">{{item.stepName}}</span>
+															</div>
+															<div>订单编号：{{item.nursingID}}</div>
+															<van-card
+																:thumb="item.imagePath"
+																@click="onDetails(item.nursingID)"
+																@click-thumb = "onShow(index)"
+															>
+																<template #title>
+															        <div style="font-size: 12px;font-weight: bold">店铺：{{item.customerNa}} ({{item.operator}})</div>
+															        <div v-if="item.step==4"><span style="line-height: 20px;margin-right: 10px">评分：</span>
+														                <van-rate v-model="item.score" color="#FF0000" void-icon="star" readonly
+														            allow-half></van-rate></div>
+															    </template>
+															    <template #tags>
+																	<div style="margin-top:5px;" v-if="item.remark!=''">
+																		<van-tag plain type="danger" style="margin-top:5px;">
+																	    	店铺备注
+																		</van-tag>   
+																	    	{{item.remark}}
+																	</div>
+																	<div style="margin-top:5px;" v-if="item.employeeRemake!=null">
+																	    <van-tag plain type="warning" >
+																	    	员工备注
+																	    </van-tag>   
+																	    	{{item.employeeRemake}}
+																	</div>
+																</template>
+																<template #num>
+																	<div>数量: {{item.quantity}}</div>
+																</template>
+															</van-card>
+															<div style="text-align: right;">
+																<van-button type="default" size="normal" @click="deleteNursing(item.nursingID,index)" v-if="item.step==1&&type=='staff'">删除</van-button>
+																<van-button type="default" size="normal" @click="updateNursing(item.nursingID)" v-if="item.step==1&&type=='staff'">修改</van-button>
+																<van-button type="default" size="normal" @click="showBottomClick(index)" v-if="type=='account'">备注</van-button>
+																<van-button type="primary" size="normal" @click="showBottomConfirmClick(index)" v-if="item.step==1&&type=='account'">确认</van-button>
+																<van-button type="warning" size="normal" @click="revokeNursingButton(item.nursingID,index,1)" v-if="item.step==2&&type=='account'">取消确认</van-button>
+																<van-button type="danger"  size="normal" @click="showBottomEmitClick(index)" v-if="item.step==2&&type=='account'">发货</van-button>
+																<van-button type="warning" size="normal" @click="revokeNursingButton(item.nursingID,index,2)" v-if="item.step==3&&type=='account'">取消发货</van-button>
+																<van-button type="warning" size="normal" @click="staffRevokeNursingButton(item.nursingID,index,3)" v-if="item.step==4&&type=='staff'">取消收货</van-button>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>	
+										</div>
+									</div>
+								</div>
+								</van-list>
+									<!-- 卡片 -->
+									<div class="tab-content" v-if="list.length==0">
+										<div class="tab-pane fade show active" id="Boxed" role="tabpanel">
+											<div class="row">
+												<div class="col-xl-3 col-xxl-4  col-md-4 col-sm-6">
+													<van-empty image="search" description="无护理信息"></van-empty>
+												</div>
+											</div>	
+										</div>
+									</div>
+								</div>
+							</div>
+						</van-tab>
+						</van-tabs>
+						<!-- 图片预加载 -->
+						<van-image-preview v-model:show="show" :images="images" >
+						</van-image-preview>
+						<!--**********************************
+					            	弹出窗开始
+					    ***********************************-->
+						<van-popup v-model:show="showTop" 
+							round
+							closeable
+							position="right" 
+							:style="{ height:'100%', width:'80%'}"  >
+							
+							<van-form class="conditionForm" @submit="onSearch">
+								<div style="margin:5px 10px; font-weight:bold; font-size:15px;">选择查询条件</div>
+								<van-cell-group inset>
+									<van-field
+									    v-model = "value"
+									    label = "搜索词"
+									    placeholder = "请输入店铺名称/店铺号/操作人/备注信息/订单编号" 
+									    maxlength = 30
+									    @focus="closeShow"
+									></van-field>
+									<van-field
+									  v-model="startDate"
+									  is-link
+									  readonly
+									  label="开始时间"
+									  placeholder="请选择开始时间"
+									  @click="startDateClick"
+									></van-field>
+									<van-datetime-picker
+										v-if = "startDateShow"
+										v-model="startDate"
+										type="date"
+			  							:min-date="minDate"
+			  							:max-date="maxDate"
+			  							visible-item-count= "3"
+										@change="startDateConfirm"
+										@cancel="startDateShow = false"
+									>
+										<template #default>
+											<!-- 自定義時間選擇器頂部欄 -->
+										</template>
+									</van-datetime-picker>
+									
+									<van-field
+									  v-model="endDate"
+									  is-link
+									  readonly
+									  label="结束时间"
+									  placeholder="请选择结束时间"
+									  @click="endDateClick"
+									></van-field>
+									<van-datetime-picker
+										v-if = "endDateShow"
+										v-model="endDate"
+										type="date"
+			  							title="选择年月日"
+			  							:min-date="minDate"
+			  							:max-date="maxDate"
+			  							visible-item-count= "3"
+										@change="endDateConfirm"
+										@cancel="endDateShow = false"
+									>
+										<template #default>
+											<!-- 自定義時間選擇器頂部欄 -->
+										</template>
+									</van-datetime-picker>
+								
+								</van-cell-group>
+								<footer>
+									<van-row justify="space-between">
+										<van-col span="11">
+										  	<van-button square block @click="onReset">重置</van-button>
+										</van-col>
+									  	<van-col span="11" >
+									  		<van-button square block type="danger" native-type="submit" >查询</van-button>
+									  	</van-col>
+									</van-row>
+									
+							    	
+							    </footer>
+							</van-form>
+						</van-popup>
+						<!-- ************************************************************* -->
+						<van-popup v-model:show="showBottom" 
+							round
+							closeable
+							position="bottom" 
+							:style="{ height:'40%'}"  >
+							
+							<van-form class="conditionForm" @submit="updateNursingEmployeeRemake()">
+								<div style="margin:5px 10px; font-weight:bold; font-size:15px;">输入员工备注信息</div>
+								<van-cell-group inset>
+									<van-field
+										v-model="employeeRemake"
+										rows="2"
+								  		autosize
+										label="备注"
+										type="textarea"
+								  		maxlength="35"
+								  		show-word-limit
+										placeholder="可输入备注信息"
+									></van-field>
+								</van-cell-group>
+								<footer>
+									<van-row justify="space-between">
+										<van-button 
+									    	round 
+									    	block 
+									    	type="danger" 
+									    	:loading="btLoading"
+									    	loading-text="信息提交中"
+									    	native-type="submit" >提交
+									    </van-button>
+									</van-row>
+							    </footer>
+							</van-form>
+						</van-popup>
+						<!-- ************************************************************* -->
+						<van-popup v-model:show="showBottomConfirm" 
+							round
+							closeable
+							position="bottom" 
+							:style="{ height:'40%'}"  >
+							
+							<van-form class="conditionForm" @submit="advanceNursingButton(2)">
+								<div style="margin:5px 10px; font-weight:bold; font-size:15px;">确认订单前请上传护理物品图片</div>
+								<van-cell-group inset>
+									<van-field  
+									label="图片上传"
+									>
+										<template #input>
+											<van-uploader v-model="fileList" max-count="4"/>
+										</template>
+									</van-field>
+								</van-cell-group>
+								<footer>
+									<van-row justify="space-between">
+										<van-button 
+									    	round 
+									    	block 
+									    	type="danger" 
+									    	:loading="btLoading"
+									    	loading-text="信息提交中"
+									    	native-type="submit" >提交
+									    </van-button>
+									</van-row>
+							    </footer>
+							</van-form>
+						</van-popup>
+						<!-- ************************************************************* -->
+						<van-popup v-model:show="showBottomEmit" 
+							round
+							closeable
+							position="bottom" 
+							:style="{ height:'40%'}"  >
+							
+							<van-form class="conditionForm" @submit="advanceNursingButton(3)">
+								<div style="margin:5px 10px; font-weight:bold; font-size:15px;">订单发货前请上传护理物品图片</div>
+								<van-cell-group inset>
+									<van-field  
+									label="图片上传"
+									>
+										<template #input>
+											<van-uploader v-model="fileList" max-count="4"/>
+										</template>
+									</van-field>
+								</van-cell-group>
+								<footer>
+									<van-row justify="space-between">
+										<van-button 
+									    	round 
+									    	block 
+									    	type="danger" 
+									    	:loading="btLoading"
+									    	loading-text="信息提交中"
+									    	native-type="submit" >提交
+									    </van-button>
+									</van-row>
+							    </footer>
+							</van-form>
+						</van-popup>
+						<!-- ************************************************************* -->
+						<van-popup v-model:show="showBottomTakeOver" 
+							round
+							closeable
+							position="bottom" 
+							:style="{ height:'70%'}"  >
+							
+							<van-form class="conditionForm" @submit="staffAdvanceNursingButton(4)">
+								<div style="margin:5px 10px; font-weight:bold; font-size:15px;">订单收货前，请评价本次的洗鞋服务</div>
+								<van-cell-group inset>
+									<van-field name="rate" label="评分">
+									  <template #input>
+									    <van-rate v-model="score" />
+									  </template>
+									</van-field>
+									<van-field  
+									label="图片上传"
+									>
+										<template #input>
+											<van-uploader v-model="fileList" max-count="4"/>
+										</template>
+									</van-field>
+									<van-field
+										v-model="appraise"
+										rows="2"
+										label="评价"
+										type="textarea"
+								  		maxlength="35"
+								  		show-word-limit
+										placeholder="可输入评价信息"
+									></van-field>
+								</van-cell-group>
+								<footer>
+									<van-row justify="space-between">
+										<van-button 
+									    	round 
+									    	block 
+									    	type="danger" 
+									    	:loading="btLoading"
+									    	loading-text="信息提交中"
+									    	native-type="submit" >提交
+									    </van-button>
+									</van-row>
+							    </footer>
+							</van-form>
+						</van-popup>
+						<!-- ************************************************************* -->
+						<van-popup v-model:show="showBottomDetails" 
+							round
+							closeable
+							position="bottom" 
+							:style="{ height:'90%'}"  >
+							<div style="margin:15px 10px; font-weight:bold; font-size:15px;">点击进度条，会显示对应进度图片</div>	
+						
+							<div class="divider"></div>
+							
+							<van-steps
+								:active="nursingDetailsVo.currentStep-1" 
+								active-color="#fc0202" 
+								direction="vertical">
+							  <van-step v-for="(item,index) in nursingDetailsVo.nursingProgress" @click="onStepShow(index)">
+							  	<p style="font-weight:bold; font-size:15px;">【 {{item.stepName}} 】操作人:  {{item.operator}}</p>
+							  	<p>日期: {{item.inputDateToString}} <span v-if="item.step==4"> , 评价: {{nursingDetailsVo.appraise}}</span></p>
+							  </van-step>
+							</van-steps>
+						
+							<div style="margin:25px 10px; font-weight:bold; font-size:15px;">操作日志</div>	
+						
+							<table class="table">
+							  <tbody>
+							    <tr v-for="(item,index) in nursingLogs">
+							      <th scope="row">{{item.createTimeToString}} <span v-if="item.customerNa!=null"> 店铺: {{item.customerNa}} , </span> 操作人: {{item.operator}}, 操作: {{item.operate}};</th>
+							    </tr>
+							  </tbody>
+							</table>
+						</van-popup>
+						<!-- 图片预加载 -->
+						<van-image-preview v-model:show="stepShow" :images="stepImages" >
+						</van-image-preview>
+						<!--**********************************
+					            	弹出窗结束
+					    ***********************************-->
+					</div>
+				</div>
+            </div>
+        </div>
+        <!--**********************************
+            	内容正文 结束
+        ***********************************-->
+		
+        <!--**********************************
+            Footer start
+        ***********************************-->
+        <div class="footer">
+            <div class="copyright">
+                <p>Copyright &copy; 2022.深圳市步步高鞋商业有限公司 All rights reserved.</p>
+            </div>
+        </div>
+        <!--**********************************
+            Footer end
+        ***********************************-->
+
+		</van-pull-refresh>
+	</div>
+    <!--**********************************
+       	主包装器结束
+    ***********************************-->
+
+    <!--**********************************
+        Scripts
+    ***********************************-->
+    <!-- Required vendors -->
+    <script src="/PubgoWeb/static/js/global.min.js"></script>
+	<script src="/PubgoWeb/static/js/Chart.bundle.min.js"></script>
+	<script src="/PubgoWeb/static/js/jquery.nice-select.min.js"></script>
+	
+	<script src="/PubgoWeb/static/js/Chart.bundle.min.js"></script>
+	
+	<!-- Chart piety plugin files -->
+    <script src="/PubgoWeb/static/js/jquery.peity.min.js"></script>
+	
+	<!-- Dashboard 1 -->
+	<script src="/PubgoWeb/static/js/dashboard-1.js"></script>
+	
+	<script src="/PubgoWeb/static/js/owl.carousel.js"></script>
+	
+    <script src="/PubgoWeb/static/js/custom.min.js"></script>
+	<script src="/PubgoWeb/static/js/dlabnav-init.js"></script>
+	<script src="/PubgoWeb/static/js/demo.js"></script>
+    <script src="/PubgoWeb/static/js/styleSwitcher.js"></script>
+    <script src="/PubgoWeb/static/js/customize.js"></script>
+    
+    <script src="/PubgoWeb/assets/vue/vue.global.js"></script>
+    <script src="/PubgoWeb/assets/vue/vue.js"></script>
+	<script src="/PubgoWeb/assets/vant/vant.min.js"></script>
+	<script src="/PubgoWeb/assets/axios/axios.min.js"></script>
+	<script src="/PubgoWeb/static/js/customize.js"></script>
+	
+	<script>	
+		
+		const app = Vue.createApp({
+			data(){
+				return{
+					id: "",                           //账号id
+					name: "",                         //账号名称
+					type: "",                         //账号类型
+					categoryList: [],                 //目录列表  
+					value: "",                        //搜索关键词
+					active: 1,                        //标签页数
+					order: 0,                         //时间排序,0-下单时间由近及远; 1-下单时间由远及近
+					showTop: false,                   //显示顶部弹出窗判断
+					showBottom: false,                //显示底部弹出窗判断
+					showBottomConfirm:false,          //显示底部确认弹出窗判断
+					showBottomEmit:false,             //显示底部发货弹出窗判断
+					showBottomTakeOver:false,         //显示底部收货弹出窗判断
+					showBottomDetails:false,          //显示底部详情页弹出窗判断
+	    			minDate: new Date(2021, 0, 1),    //最小可选择日期
+	    		    maxDate: new Date(2070, 0, 0),    //最大可选择日期
+	    			startDate: this.toDateString(new Date(new Date().getFullYear() - 1
+	    					, new Date().getMonth()
+	    					, new Date().getDate())),       //开始日期，默认去年今天的日期 
+	    			startDateShow: false,             //显示日期选择器判断
+	    			endDate: null,                    //结束日期
+	    			endDateShow: false,               //显示日期选择器判断
+	    			employeeRemake: '',               //员工备注
+	    			btLoading : false,                //按钮加载状态判断
+	    			fileList: [],                     //图片文件
+	    			images:[],                        //图片地址
+		    		show : false,                     //图片预览控制器
+		    		stepImages:[],                    //进度步骤图片地址
+		    		stepShow : false,                 //进度步骤图片预览控制器
+	    			step: 0,                          //护理步骤
+	    			current : 1,                      //分页页数
+	    			score: 5,                         //评分
+	    			appraise: '',                     //评价
+	    			list: [],                         //护理鞋数据
+	    			nursingDetailsVo: [],             //护理进度明细数据
+	    			nursingLogs: [],                  //护理日志数据
+	    			finished : false,                 //是否已加载完成，加载完成后不再触发 load 事件
+	    			loading : false,                  //是否处于加载状态，加载过程中不触发 load 事件
+	    			error : false,                    //是否加载失败，加载失败后点击错误提示可以重新触发 load 事件
+	    			refreshLoading:false,             //是否处于下拉刷新状态
+	    			index: '',                        //当前list所在的索引位置 
+				}
+			},
+			methods:{
+				onRefresh(){
+					this.onSearch();
+					// 加载成功
+					this.refreshLoading = false;
+				},
+				//弹出窗监听器
+	    		showTopClick(){
+	    			this.showTop = true;
+	    		},
+	    		showBottomClick(index){
+	    			this.showBottom = true;
+	    			this.index = index;
+	    			this.employeeRemake = this.list[this.index].employeeRemake;
+	    		},
+	    		showBottomConfirmClick(index){
+	    			this.showBottomConfirm = true;
+	    			this.index = index;
+	    			//清空图片链接
+					this.fileList.splice(0,this.fileList.length);
+	    		},
+	    		showBottomEmitClick(index){
+	    			this.showBottomEmit = true;
+	    			this.index = index;
+	    			//清空图片链接
+					this.fileList.splice(0,this.fileList.length);
+	    		},
+	    		showBottomTakeOverClick(index){
+	    			this.showBottomTakeOver = true;
+	    			this.index = index;
+	    			//清空图片链接
+					this.fileList.splice(0,this.fileList.length);
+	    			this.score = 5;
+	    			this.appraise = "";
+	    		},
+	    		//开启一个选择器，其它选择器关闭
+	    		startDateClick(){
+	    			this.startDateShow = true;
+	    			this.endDateShow = false;
+	    		},
+	    		endDateClick(){
+	    			this.startDateShow = false;
+	    			this.endDateShow = true;
+	    		},
+	    		closeShow(){
+	    			this.startDateShow = false;
+	    			this.endDateShow = false;
+	    		},
+	    		//时间选择器确认监听器
+	    		startDateConfirm (value){
+	    			//格式化日期yyyy-mm-dd
+	    			this.startDate = this.toDateString(value);
+	    		},
+	    		endDateConfirm (value){
+	    			//格式化日期yyyy-mm-dd
+	    			this.endDate = this.toDateString(value);
+	    		},
+	    		//格式化日期yyyy-mm-dd
+	    		toDateString(value){
+	    			let seperator = "-";
+	    			//月份
+	    			let month = value.getMonth() + 1;
+	    			if ( month>=1 && month<=9 ){
+	    				month = "0"+month;
+	    			}
+	    			//日
+	    			let day = value.getDate();
+	    			if ( day>=1 && day<=9 ){
+	    				day = "0"+day;
+	    			}
+	    			let currentDate = value.getFullYear()+seperator+month+seperator+day
+	    			return currentDate;
+	    		},
+	    		onReset(){
+	    			this.value = "";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+	    		    this.startDate = null;
+	    		    this.endDate = null;
+	    		},
+	    		//时间排序监听事件
+	    		onScreen() {
+	    			//更新排序
+	    			if ( this.order==0 ){
+	    				this.order=1;
+	    			}else {
+	    				this.order=0
+	    			}
+	    			//并查询护理订单
+	    			this.onSearch();
+	    		},
+	    		//查询护理订单监听事件
+				onSearch: function () {
+					this.current = 1;
+					this.onChange(true);
+				},
+				//到页面底部时,向服务器查询下一页数据
+	            loadMore() {
+	                //如果当前不是最后一页,则当前页号+1并向服务器发起请求查询下一页数据
+	                if (this.finished==false) {
+	                    this.current = this.current + 1;
+	                    this.onChange();
+	                }
+	            },
+				/*
+	             * onchange 当页面状态发生变更后,Ajax重新查询库存数据
+	             * isFlush 参数说明是否清空已有列表
+	             */
+	             onChange: function ( isFlush ){
+	            	 const objApp = this;
+	            	 
+	            	// 展示加载
+			    	vant.Toast.loading({
+		    	    	duration: 0, 		
+		    	        forbidClick: true,
+		    	        message: "加载中..."
+		    	    });
+	            	
+	            	//获取查询数据
+	            	var data = {
+	            		"value" : objApp.value,
+	            		"step" : objApp.step,
+	            		"startDate" : objApp.startDate,
+	            		"endDate" : objApp.endDate,
+	            		"orderBy" : objApp.order,
+	            		"page" : objApp.current,
+	            	}
+	            	
+	            	//设置json请求头
+		    		config = {
+	    		        headers: {
+	    		        	'Content-Type': 'application/json'
+	    		        }
+	    		    }
+	            	
+	            	//提交查询数据
+	            	axios.post("/PubgoWeb/register/nursingCentel/queryNursings", data, config)
+	            	.then(function(response){
+	            		const json = response.data;
+	            		console.log(json)
+	            		if( json.code == 200 ){
+	            			//@return  IPage分页对象记录列表
+	            			const tempList = json.data.iPage.records; 
+	            			//splice清除list列表的值,并返回顶部
+	            			if ( isFlush == true ){
+	            				objApp.list.splice(0,objApp.list.length);
+	            				document.body.scrollTop = 0;
+	                            document.documentElement.scrollTop = 0;
+	            			}
+	            			//遍历tempList，添加下一页数据
+		            		tempList.forEach(function(item){
+	                            objApp.list.push(item);
+	                        })
+	                     	// 加载状态结束
+        					objApp.loading = false;
+		            		//当前页是否最后一页
+	                        if( json.data.iPage.current >= json.data.iPage.pages ){
+	                            objApp.finished = true;
+	                        }else{
+	                            objApp.finished = false;
+	                        }
+		            		// 清除加载
+		            		vant.Toast.clear();
+	            		}else{
+	            			vant.Toast.fail("错误代码: "+json.code+"  错误原因: "+json.msg);
+				   	        console.error("错误代码: "+json.code+"  错误原因: "+json.msg);	
+				   	        //显示加载失败
+				   	     	objApp.error = true;
+	            		}
+	            	})
+	            	.catch(function(error){
+	            		// 请求发送失败 
+			   	        vant.Toast.fail("连接服务器失败");
+			   	        console.error(error);
+			   	   		//显示加载失败
+			   	     	objApp.error = true;
+	            	});
+	             },
+	           //图片预览监听器
+		    	onShow(index){
+		    		//清空图片地址
+		    		this.images.splice(0, this.images.length);
+		    		//替换地址
+		    		const path = this.list[index].imagePath;
+		    		this.images.push(path);
+		    		this.show = true;
+		    	},
+		    	onStepShow(index){
+		    		const objApp = this;
+		    		
+		    		//清空图片地址
+		    		objApp.stepImages.splice(0, objApp.stepImages.length);
+		    		//替换地址
+		    		if ( objApp.nursingDetailsVo.nursingProgress[index].imagePaths != null ){
+		    			for ( let i=0; i<objApp.nursingDetailsVo.nursingProgress[index].imagePaths.length; i++ ){
+		    				const path = objApp.nursingDetailsVo.nursingProgress[index].imagePaths[i];
+		    				objApp.stepImages.push(path);
+		    			}
+		    		}else{
+		    			objApp.stepImages.push("/PubgoWeb/static/image/logo.jpg");
+		    		}
+		    		
+		    		this.stepShow = true;
+		    	},
+		    	//删除按钮事件
+		    	deleteNursing(id,index){
+		    		const objApp = this;
+		    		
+		    		vant.Dialog.alert({
+		    			message: '是否删除，删除后信息将无法找回',
+		    			showCancelButton: true,
+		    		})
+		    		//确定删除
+		    		.then(() => {
+		    			// 展示加载
+				    	vant.Toast.loading({
+			    	    	duration: 0, 		
+			    	        forbidClick: true,
+			    	        message: "加载中..."
+			    	    });
+		    			axios.post("/PubgoWeb/register/nursingCentel/staff/delete","nursingID="+id)
+		            	.then(function(response){
+		            		const json = response.data;
+		            		console.log(json)
+		            		if( json.code == 200 ){
+		            			//删除list制定索引的元素
+		            			objApp.list.splice(index,1);
+			            		// 加载成功
+			            		vant.Toast.success('删除成功');
+		            		}else{
+		            			vant.Toast.fail("错误代码: "+json.code+"  错误原因: "+json.msg);
+					   	        console.error("错误代码: "+json.code+"  错误原因: "+json.msg);	
+		            		}
+		            	})
+		            	.catch(function(error){
+		            		// 请求发送失败 
+				   	        vant.Toast.fail("连接服务器失败");
+				   	        console.error(error);
+		            	});
+		    		})
+		    		//取消
+		    		.catch(() => {
+		    		    return;
+		    		});
+		    		
+		    	},
+		    	//修改按钮事件
+		    	updateNursing(id){
+		    		const objApp = this;
+		    		
+		    		vant.Dialog.alert({
+		    			message: '即将跳转到修改信息页面，是否跳转',
+		    			showCancelButton: true,
+		    		})
+		    		//确定修改
+		    		.then(() => {
+		    			window.location.href='/PubgoWeb/backEnd/customer/NursingCenterUpdate.html?id='+id;
+		    		})
+		    		//取消
+		    		.catch(() => {
+		    		    return;
+		    		});
+		    		
+		    	},
+		    	//修改员工备注按钮事件
+		    	updateNursingEmployeeRemake(){
+		    		const objApp = this;
+		    		
+		    		// 展示加载
+			    	vant.Toast.loading({
+		    	    	duration: 0, 		
+		    	        forbidClick: true,
+		    	        message: "加载中..."
+		    	    });
+		    		
+		    		//提交按钮显示加载状态，阻止用户再次点击提交按钮
+					objApp.btLoading = true;
+					//提交表单数据
+		    		const params = new FormData();
+		    		params.append("nursingID",  objApp.list[objApp.index].nursingID);
+		    		params.append("employeeRemake", objApp.employeeRemake);
+		    		
+		    		axios.post("/PubgoWeb/register/nursingCentel/update/updateNursingEmployeeRemake",params)
+		    		.then(function(response){
+		    			const json = response.data;
+		    			if( json.code == 200 ){
+		    				//修改员工备注
+	            			objApp.list[objApp.index].employeeRemake = objApp.employeeRemake;
+		    				// 加载成功
+		    				objApp.showBottom = false;
+		    				objApp.btLoading = false;
+		            		vant.Toast.success('备注成功');
+	    				}else{
+	    					objApp.btLoading = false;
+	    					vant.Toast.fail("错误代码: "+json.code+"  错误原因: "+json.msg);
+				   	        console.error("错误代码: "+json.code+"  错误原因: "+json.msg);	
+		            	}
+		    		}).catch(error =>{
+		    			// 请求发送失败
+		    			objApp.btLoading = false;
+				   	  	vant.Toast.fail("请求服务器失败");
+				   	    console.error(error);
+		    		});
+		    	},
+		    	//推进进度按钮监听器
+		    	advanceNursingButton(step){
+					const objApp = this;
+		    		
+					
+		    		// 展示加载
+			    	vant.Toast.loading({
+		    	    	duration: 0, 		
+		    	        forbidClick: true,
+		    	        message: "加载中..."
+		    	    });
+		    		
+		    		//提交按钮显示加载状态，阻止用户再次点击提交按钮
+					objApp.btLoading = true;
+		    		
+					//提交表单数据
+		    		const params = new FormData();
+		    		params.append("step",  step);
+		    		params.append("nursingID", objApp.list[objApp.index].nursingID);
+	    			//判断是否有图片上传
+		    		if (objApp.fileList.length == 0 ){
+		    			//默认提交地址及HTTP 请求头
+		    			var path = "/PubgoWeb/register/nursingCentel/update/advanceNursingStepText";
+		    			var config = {
+		    		       		headers: {
+		    		       	        'Content-Type': 'application/x-www-form-urlencoded'
+		    		            }
+		    		    };
+		    		}else{
+		    			//遍历图片文件，上传到后台
+		    			objApp.fileList.forEach((file, index) => {
+		    				params.append("files", file.file);
+		    			});
+		    			path = "/PubgoWeb/register/nursingCentel/update/advanceNursingStepFile";
+		    			config = {
+		    		        	headers: {
+		    		        		'Content-Type': 'multipart/form-data'
+		    		        	}
+		    		    }
+		    		}
+	    			
+		    		//提交数据
+		    		axios.post(path,params,config)
+		    		.then(function(response){
+		    			const json = response.data;
+		    			console.log(json)
+		    			if ( json.code == "200" ){
+		    				//更新护理信息
+		    				objApp.list[objApp.index] = json.data.nursingCenterVO;
+		    				
+		    				// 加载成功
+		    				objApp.showBottomConfirm = false;
+		    				objApp.showBottomEmit = false;
+		    				objApp.btLoading = false;
+		    				objApp.fileList.splice(0,objApp.fileList.length);
+		    				vant.Toast.success('提交成功');
+		    			}else{
+		    				objApp.btLoading = false;
+	    					vant.Toast.fail("错误代码: "+json.code+"  错误原因: "+json.msg);
+				   	        console.error("错误代码: "+json.code+"  错误原因: "+json.msg);	
+		    			}
+		    		}).catch( error=> {
+		    			// 请求发送失败
+		    			objApp.btLoading = false;
+				   	  	vant.Toast.fail("请求服务器失败");
+				   	    console.error(error);
+		    		});
+		    	},
+		    	//撤销按钮事件
+		    	revokeNursingButton(id,index,step){
+		    		const objApp = this;
+		    		
+		    		vant.Dialog.alert({
+		    			message: '是否撤销返回上一级护理进度',
+		    			showCancelButton: true,
+		    		})
+		    		//确定修改
+		    		.then(() => {
+		    			// 展示加载
+				    	vant.Toast.loading({
+			    	    	duration: 0, 		
+			    	        forbidClick: true,
+			    	        message: "加载中..."
+			    	    });
+		    			
+				    	//提交表单数据
+			    		const params = new FormData();
+			    		params.append("nursingID",  id);
+			    		params.append("step", step);
+			    		axios.post("/PubgoWeb/register/nursingCentel/update/revokeNursingStep",params)
+			    		.then(function(response){
+			    			const json = response.data;
+			    			if( json.code == 200 ){
+			    				//更新护理信息
+			    				objApp.list[index] = json.data.nursingCenterVO;
+			    				
+			    				// 加载成功
+			            		vant.Toast.success('取消成功');
+		    				}else{
+		    					vant.Toast.fail("错误代码: "+json.code+"  错误原因: "+json.msg);
+					   	        console.error("错误代码: "+json.code+"  错误原因: "+json.msg);	
+			            	}
+			    		}).catch(error =>{
+			    			// 请求发送失败
+					   	  	vant.Toast.fail("请求服务器失败");
+					   	    console.error(error);
+			    		});
+		    		})
+		    		//取消
+		    		.catch(() => {
+		    		    return;
+		    		});
+		    		
+		    	},
+		    	//推进进度按钮监听器 员工号
+		    	staffAdvanceNursingButton(step){
+					const objApp = this;
+		    		
+					
+		    		// 展示加载
+			    	vant.Toast.loading({
+		    	    	duration: 0, 		
+		    	        forbidClick: true,
+		    	        message: "加载中..."
+		    	    });
+		    		
+		    		//提交按钮显示加载状态，阻止用户再次点击提交按钮
+					objApp.btLoading = true;
+		    		
+					//提交表单数据
+		    		const params = new FormData();
+		    		params.append("step",  step);
+		    		params.append("nursingID", objApp.list[objApp.index].nursingID);
+		    		params.append("score", objApp.score);
+		    		params.append("appraise", objApp.appraise);
+	    			//判断是否有图片上传
+		    		if (objApp.fileList.length == 0 ){
+		    			//默认提交地址及HTTP 请求头
+		    			var path = "/PubgoWeb/register/nursingCentel/staff/advanceNursingStepText";
+		    			var config = {
+		    		       		headers: {
+		    		       	        'Content-Type': 'application/x-www-form-urlencoded'
+		    		            }
+		    		    };
+		    		}else{
+		    			//遍历图片文件，上传到后台
+		    			objApp.fileList.forEach((file, index) => {
+		    				params.append("files", file.file);
+		    			});
+		    			path = "/PubgoWeb/register/nursingCentel/staff/advanceNursingStepFile";
+		    			config = {
+		    		        	headers: {
+		    		        		'Content-Type': 'multipart/form-data'
+		    		        	}
+		    		    }
+		    		}
+	    			
+		    		//提交数据
+		    		axios.post(path,params,config)
+		    		.then(function(response){
+		    			const json = response.data;
+		    			console.log(json)
+		    			if ( json.code == "200" ){
+		    				//更新护理信息
+		    				objApp.list[objApp.index] = json.data.nursingCenterVO;
+		    				
+		    				// 加载成功
+		    				objApp.showBottomTakeOver = false;
+		    				objApp.btLoading = false;
+		    				objApp.fileList.splice(0,objApp.fileList.length);
+		    				vant.Toast.success('提交成功');
+		    			}else{
+		    				objApp.btLoading = false;
+	    					vant.Toast.fail("错误代码: "+json.code+"  错误原因: "+json.msg);
+				   	        console.error("错误代码: "+json.code+"  错误原因: "+json.msg);	
+		    			}
+		    		}).catch( error=> {
+		    			// 请求发送失败
+		    			objApp.btLoading = false;
+				   	  	vant.Toast.fail("请求服务器失败");
+				   	    console.error(error);
+		    		});
+		    	},
+		    	//撤销按钮事件 员工号
+		    	staffRevokeNursingButton(id,index,step){
+		    		const objApp = this;
+		    		
+		    		vant.Dialog.alert({
+		    			message: '是否撤销返回上一级护理进度',
+		    			showCancelButton: true,
+		    		})
+		    		//确定修改
+		    		.then(() => {
+		    			// 展示加载
+				    	vant.Toast.loading({
+			    	    	duration: 0, 		
+			    	        forbidClick: true,
+			    	        message: "加载中..."
+			    	    });
+		    			
+				    	//提交表单数据
+			    		const params = new FormData();
+			    		params.append("nursingID",  id);
+			    		params.append("step", step);
+			    		params.append("score", objApp.score);
+			    		params.append("appraise", objApp.appraise);
+			    		axios.post("/PubgoWeb/register/nursingCentel/staff/revokeNursingStep",params)
+			    		.then(function(response){
+			    			const json = response.data;
+			    			if( json.code == 200 ){
+			    				//更新护理信息
+			    				objApp.list[index] = json.data.nursingCenterVO;
+			    				
+			    				// 加载成功
+			            		vant.Toast.success('取消成功');
+		    				}else{
+		    					vant.Toast.fail("错误代码: "+json.code+"  错误原因: "+json.msg);
+					   	        console.error("错误代码: "+json.code+"  错误原因: "+json.msg);	
+			            	}
+			    		}).catch(error =>{
+			    			// 请求发送失败
+					   	  	vant.Toast.fail("请求服务器失败");
+					   	    console.error(error);
+			    		});
+		    		})
+		    		//取消
+		    		.catch(() => {
+		    		    return;
+		    		});
+		    		
+		    	},
+		    	//显示详情页弹出窗
+		    	onDetails(id){
+		    		const objApp = this;
+		    		
+		    		//当图片预览控制器未打开时，弹窗才能启动
+		    		if (this.show == false){
+		    			objApp.showBottomDetails = true;
+		    		}
+		    		
+		    		// 展示加载
+			    	vant.Toast.loading({
+		    	    	duration: 0, 		
+		    	        forbidClick: true,
+		    	        message: "加载中..."
+		    	    });
+		    		
+		    		//获取数据
+		    		axios.get("/PubgoWeb/register/nursingCentel/queryNursingDetails?nursingID="+id)
+		    		.then(function(response){
+		    			const json = response.data;
+		    			console.log(json);
+		    			if( json.code == 200 ){
+		    				//获取数据
+		    				objApp.nursingDetailsVo = json.data.nursingDetailsVo;
+		    				objApp.nursingLogs = json.data.nursingLogs;
+		    				vant.Toast.clear();
+	    				}else{
+	    					vant.Toast.fail("错误代码: "+json.code+"  错误原因: "+json.msg);
+				   	        console.error("错误代码: "+json.code+"  错误原因: "+json.msg);	
+		            	}
+		    		}).catch(error =>{
+		    			// 请求发送失败
+				   	  	vant.Toast.fail("请求服务器失败");
+				   	    console.error(error);
+		    		});
+		    	}
+			},
+			mounted(){
+				const objApp = this;
+				//验证是否登录
+	    		isLogin(sessionStorage.getItem("id"));
+	    		objApp.id = sessionStorage.getItem("id");
+	    		objApp.name = sessionStorage.getItem("name");
+	    		objApp.type = sessionStorage.getItem("type");
+	    		//获取应用列表
+	    		axios.get('/PubgoWeb/category/list/quest')
+	    			.then(function (response){
+	    				const json = response.data;
+	    				if( json.code == 200 ){
+	    					objApp.categoryList = json.data.categoryVos; 
+	    				}else{
+		            		vant.Toast.fail("错误原因: "+json.msg);
+				   	        console.error("错误代码: "+json.code+"  错误原因: "+json.msg);	
+		            	}
+	    			})
+	    			.catch(function (error) {
+	    				// 请求发送失败
+				   	  	vant.Toast.fail("请求发送失败");
+				   	    console.error(error);
+	    			});
+	    		//查询护理订单
+    			this.onSearch();
+			}
+		});
+			
+		app.use(vant);
+		app.use(vant.Lazyload);
+		app.mount('#main-wrapper');
+	</script>
+
+</body>
+</html>

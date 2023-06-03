@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 映射配置文件 -->
+<!-- 配置文件约束  mapper为根标签 -->
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+ <mapper namespace="com.pubgo.dao.VIPIntegralExchangeDao">
+ 
+	<insert id="insertOne" parameterType="com.pubgo.bean.VIPIntegralExchange">
+		insert into VIPIntegralExchange( Vip, exchangeDate, Amount
+			, Operator, Input_Date, PostedDate, PostUser, Remark )  VALUES(
+			#{vip}, #{exchangeDate}, #{amount}, #{operator}, #{inputDate}
+			, #{postedDate}, #{postUser}, #{remark}
+			) ;
+	</insert>
+	
+
+ </mapper>

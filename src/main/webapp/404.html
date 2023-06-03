@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>访问页面不存在</title>
+    <!--content="width=device-width基于设备逻辑分辨率进行页面开发
+    	,initial-scale=1.0, maximum-scale=1.0,user-scalable=no禁止页面缩放-->
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, maximum-scale=1.0,user-scalable=no">
+    
+	<!-- 引入图标文件 -->
+    <link rel="shortcut icon" href="/PubgoWeb/favicon.ico" type="image/x-icon" />
+    
+    <!-- 引入vant样式文件 -->
+	<link
+	  rel="stylesheet"
+	  href="/PubgoWeb/assets/vant/index.css"
+	/>
+    
+    <!-- 引入 Vue , Vant和 axios 的 JS 文件 -->
+	<script src="/PubgoWeb/assets/vue/vue.js"></script>
+	<script src="/PubgoWeb/assets/vant/vant.min.js"></script> 
+	
+	<style type="text/css">
+		.main{
+			margin: 200px auto;
+			text-align: center;
+		}
+	</style>
+</head>
+<body>
+	
+	<div id="app" class="main">
+	
+		<div>
+			<van-empty
+			  image="error"
+			  image-size="180"
+			  description="访问页面不存在"
+			></van-empty>
+		</div>
+
+	</div>
+	
+	
+	<script type="text/javascript">
+	
+		const app = Vue.createApp({
+			
+		});
+	  	app.use(vant);
+	  	app.use(vant.Lazyload);
+		app.mount('#app');
+	</script>
+</body>
+</html>

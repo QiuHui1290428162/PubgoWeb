@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+         version="3.1">
+    <!--DispatchServlet-->
+    <servlet>
+    
+        <servlet-name>springmvc</servlet-name>
+        <!--
+            DispatcherServlet是Spring MVC最核心的对象
+            DispatcherServlet用于拦截Http请求,
+			并根据请求的URL调用与之对应的Controller方法,来完成Http请求的处理
+        -->
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <!--applicationContext.xml-->
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>classpath:applicationContext.xml</param-value>
+        </init-param>
+        <!--
+            	在Web应用启动时自动创建Spring IOC容器,
+            	并初始化DispatcherServlet
+        -->
+        <load-on-startup>0</load-on-startup>
+    </servlet>
+    
+    <!-- 设置HTTPSession有效时间，840分钟 -->
+	<session-config>   
+       <session-timeout>840</session-timeout>   
+	</session-config>
+	
+    <servlet-mapping>
+        <servlet-name>springmvc</servlet-name>
+        <!--"/" 代表拦截所有请求-->
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+    
+    
+    <!-- 将请求的字符集修改为UTF-8字符集 -->
+    <filter>
+        <filter-name>characterFilter</filter-name>
+        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+    </filter>
+    <!-- 映射拦截所有的请求 -->
+    <filter-mapping>
+        <filter-name>characterFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    
+    
+     <!-- 配置校检用户登录过滤器  -->
+    <filter>
+        <filter-name>UserFilter</filter-name>
+        <filter-class>com.pubgo.filter.UserFilter</filter-class>
+    </filter> 
+    <!-- 映射拦截选定的地址 -->
+    <filter-mapping>
+        <filter-name>UserFilter</filter-name>
+        <url-pattern>/login/get</url-pattern>
+        <url-pattern>/stock/query/*</url-pattern>
+        <url-pattern>/check/*</url-pattern>
+        <url-pattern>/vip/*</url-pattern>
+        <url-pattern>/register/nursing/*</url-pattern>
+        <url-pattern>/register/nursingCentel/*</url-pattern>
+    </filter-mapping>
+    
+    
+    <!-- 配置校检员工号登录过滤器  -->
+    <filter>
+        <filter-name>StaffFilter</filter-name>
+        <filter-class>com.pubgo.filter.StaffFilter</filter-class>
+    </filter> 
+    <!-- 映射拦截选定的地址 -->
+    <filter-mapping>
+        <filter-name>StaffFilter</filter-name>
+        <url-pattern>/login/getStaff</url-pattern>
+        <url-pattern>/register/nursingCentel/staff/*</url-pattern>
+    </filter-mapping>
+    
+    <!-- 配置校检护理中心登录过滤器  -->
+    <filter>
+        <filter-name>AccountFilter</filter-name>
+        <filter-class>com.pubgo.filter.AccountFilter</filter-class>
+    </filter> 
+    <!-- 映射拦截选定的地址 -->
+    <filter-mapping>
+        <filter-name>AccountFilter</filter-name>
+        <url-pattern>/register/nursingCentel/update/*</url-pattern>
+    </filter-mapping>
+    
+</web-app>

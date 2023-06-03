@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 映射配置文件 -->
+<!-- 配置文件约束  mapper为根标签 -->
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+ <mapper namespace="com.pubgo.dao.CustomerVIPDao">
+ 
+	<insert id="insertCustomerVIP" parameterType="com.pubgo.request.AddCustomerVipReq">
+		INSERT INTO CustomerVIP(VIP,EncryptVIP,Name,Sex,BirthDate,RGUser,ShoeSize,
+			Work,Earning,Height,Weight,Address,Remark,Email,BegainDate,ExpireDate,
+			Customer_ID,JBUser,VipGrade,LeiBie,UseStatus,Tel) 
+			VALUES(#{vip},#{vip},#{name},#{sex},#{birthDate},#{rgUser},#{shoeSize},
+			#{work},#{earning},#{height},#{weight},#{address},#{remark},#{yzOpenID},
+			#{begainDate},#{expireDate},#{customerID},#{jbUser},#{vipGrade},#{leiBie},
+			#{useStatus},#{tel})
+	</insert>
+	
+
+ </mapper>
