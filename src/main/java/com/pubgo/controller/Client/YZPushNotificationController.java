@@ -71,7 +71,7 @@ public class YZPushNotificationController {
 	//接受有赞的推送信息
 	@PostMapping("/post")
 	public ResponseUtil doPostRequest(@RequestBody String json) {
-		ResponseUtil resp = null;
+		ResponseUtil resp = new ResponseUtil();
 
 		try {
 			//反序列化为
@@ -100,7 +100,7 @@ public class YZPushNotificationController {
                     return new ResponseUtil(ImoocMallExceptionEnum.YZ_ERROR_UNKNOWN_TEPY);
                 }
             }else if (message.containsKey("trigger_behavior_dto")) {
-            	handleMemberChangeMessage(message);
+            	resp = handleMemberChangeMessage(message);
             	
             	
             } else {
@@ -128,7 +128,7 @@ public class YZPushNotificationController {
 			return new ResponseUtil(20000,e.getMessage());
 		}
 		
-		return new ResponseUtil();
+		return resp;
 	}
 	
 	
@@ -151,7 +151,7 @@ public class YZPushNotificationController {
     }
 
     // 根据 status 处理不同的会员状态变更消息
-    private void handleMemberChangeMessage(Map<String, Object> message) throws ImoocMallException, SDKException, Exception {
+    private ResponseUtil handleMemberChangeMessage(Map<String, Object> message) throws ImoocMallException, SDKException, Exception {
     	
     	//根据openid查询会员详细信息
     	Token token = new Token(yzAccessTokenServiceImpl.getAccessToken());
@@ -160,7 +160,7 @@ public class YZPushNotificationController {
     	//判断会员是否存在
     	Vip vip = customerVIPServiceImpl.queryVipByID(customerDetail.getMobile());
     	if ( vip != null ) {
-    		return ;
+    		return new ResponseUtil().put("massage", "会员已注册："+vip.getVip());
     	}
     	
     	//设置新增会员请求
@@ -225,6 +225,8 @@ public class YZPushNotificationController {
 		log.setAction("新增");
 		log.setRemark(addCustomerVipReq.getVip());
 		sysLogServiceImpl.insertLog(log);
+		
+		return new ResponseUtil().put("massage", "会员注册成功："+customerDetail.getMobile());
     }
 	
 
