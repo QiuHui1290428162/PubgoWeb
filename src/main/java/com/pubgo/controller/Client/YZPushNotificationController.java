@@ -66,6 +66,7 @@ public class YZPushNotificationController {
 	@Resource
 	private SysLogService sysLogServiceImpl;
 	
+	
 	private ObjectMapper  objectMapper  = new ObjectMapper (); 
 	
 	//接受有赞的推送信息
